@@ -24,6 +24,8 @@ startworker:
 startclient:
 	$(PYTHON) -m reindent --nobackup *.py
 
+clean:
+	find . -type f -name "FILE-TO-FIND" -exec rm -f {} \;
 
 ##############################
 # original targets
@@ -79,7 +81,7 @@ deploy:
 	virtualenv --no-site-packages $(VENV)
 	$(VENV)/bin/pip install $(SDIST)
 
-clean:
+original_(added)__clean:
 	$(PYTHON) setup.py clean
 	rm -rf build/ MANIFEST dist build my_program.egg-info deb_dist
 	find . -name '*.pyc' -delete
