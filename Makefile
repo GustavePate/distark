@@ -5,13 +5,37 @@ VERSION=`python setup.py --version`
 SDIST=dist/$(NAME)-$(VERSION).tar.gz
 VENV=/tmp/venv
 
+##############################
+#  my targets
+##############################
 
+indent:
+	$(PYTHON) -m reindent --nobackup *.py
+	
+protoc:
+	$(PROTOC) --python_out=./src/distark/common/protos/ --proto_path=./ressources/common/protos/ ./ressources/common/protos/proto_services.proto
+	
+startbroker:
+	$(PYTHON) -m reindent --nobackup *.py
+
+startworker:
+	$(PYTHON) -m reindent --nobackup *.py
+
+startclient:
+	$(PYTHON) -m reindent --nobackup *.py
+
+
+##############################
+# original targets
+############################## 
 all: check test source deb
 
 dist: source deb
 
-protoc:
-	$(PROTOC)  --python_out=./src/distark/common/protos/ --proto_path=./ressources/common/protos/ ./ressources/common/protos/proto_services.proto
+
+
+indent:
+	$(PYTHON) setup.py sdist
 
 source:
 	$(PYTHON) setup.py sdist

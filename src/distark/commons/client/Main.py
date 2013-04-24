@@ -1,11 +1,14 @@
 #encoding: utf-8
 
-import zmq 
-from distark.common.protos.proto_services_pb2 import OneRequest,RequestType, GenericRequest
-from distark.common.protos.proto_services_pb2 import OneResponse,ResponseType, GenericResponse
-from distark.common.protos.proto_services_pb2 import SimpleRequest
-from distark.common.protos.proto_services_pb2 import SimpleResponse
-from distark.common.utils.MyConfiguration import Configuration
+import zmq
+
+
+ 
+from distark.commons.protos.proto_services_pb2 import OneRequest,RequestType, GenericRequest
+from distark.commons.protos.proto_services_pb2 import OneResponse,ResponseType, GenericResponse
+from distark.commons.protos.proto_services_pb2 import SimpleRequest
+from distark.commons.protos.proto_services_pb2 import SimpleResponse
+from distark.commons.utils.MyConfiguration import Configuration
 
 
 def dothejob():

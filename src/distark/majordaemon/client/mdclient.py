@@ -1,0 +1,47 @@
+#encoding: utf-8
+"""
+Majordomo Protocol client example. Uses the mdcli API to hide all MDP aspects
+
+Author : Min RK <benjaminrk@gmail.com>
+
+"""
+import datetime
+import sys
+from distark.majordaemon.client.mdcliapi import MajorDomoClient
+
+def main():
+    
+    start_launcher=datetime.datetime.now()
+    
+    verbose = '-v' in sys.argv
+    client = MajorDomoClient("tcp://localhost:5555", verbose)
+    requests = 100000
+    for i in xrange(requests):
+        request = "Hello world"
+        try:
+            client.send("echo", request)
+        except KeyboardInterrupt:
+            print "send interrupted, aborting"
+            return
+
+    count = 0
+    while count < requests:
+        try:
+            reply = client.recv()
+        except KeyboardInterrupt:
+            break
+        else:
+            # also break on failure to reply:
+            if reply is None:
+                break
+        count += 1
+    print "%i requests/replies processed" % count
+    
+    end_launcher=datetime.datetime.now()
+
+    delta=end_launcher-start_launcher
+    print('Launcher ALL JOBS DONE  in '+str(delta)+' !!!!')    
+    
+
+if __name__ == '__main__':
+    main()

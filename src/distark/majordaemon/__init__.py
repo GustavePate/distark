@@ -1,4 +1,4 @@
-# Example package with a console entry point
+#encoding: utf-8
 
 def main():
     print "Hello World"
