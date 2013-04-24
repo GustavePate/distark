@@ -1,0 +1,69 @@
+package master;
+
+message GenericRequest {
+	required string servicename =1;
+	required string caller = 2;
+	optional string ipadress =3;
+
+	enum Priority {
+		HIGH=1;
+		STD=2;
+		LOW=3;
+	}
+
+	optional Priority priority=4 [default = LOW];
+	repeated string req_additionaldata_donotuse = 5 [deprecated=true];
+}
+
+message GenericResponse {
+	required GenericRequest req = 1;
+	required int64 computetime = 2 [default=-1];
+	optional string server_ipadress = 3;
+	repeated string resp_additionaldata_donotuse = 4 [deprecated=true];
+}
+
+message SimpleRequest { 
+	required string youpla = 1;
+}
+
+
+message SimpleResponse {
+	required string boum = 1;
+}
+
+
+enum RequestType { 
+	SIMPLE_REQUEST = 1; 
+	FOO = 2;
+} 
+
+message OneRequest { 
+	// Identifies which field is filled in. 
+	required RequestType type = 1; 
+	required GenericRequest greq = 2; 
+	// One of the following will be filled in. 
+	optional SimpleRequest simplereq = 3; 
+	optional FooReq fooreq = 4;
+}
+
+message FooReq {
+	required string boisson = 1;
+}
+	
+message BarResp {
+	required string boisson = 1;
+}
+
+enum ResponseType { 
+	SIMPLE_RESPONSE = 1; 
+	BAR = 2;
+} 
+
+message OneResponse { 
+	// Identifies which field is filled in. 
+	required ResponseType type = 1; 
+	required GenericResponse gresp = 2; 
+	// One of the following will be filled in. 
+	optional SimpleResponse simpleresp = 3; 
+	optional BarResp barresp = 4;
+}
