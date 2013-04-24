@@ -14,8 +14,34 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='proto_services.proto',
   package='master',
-  serialized_pb='\n\x14proto_services.proto\x12\x06master\"\xd0\x01\n\x0eGenericRequest\x12\x13\n\x0bservicename\x18\x01 \x02(\t\x12\x0e\n\x06\x63\x61ller\x18\x02 \x02(\t\x12\x10\n\x08ipadress\x18\x03 \x01(\t\x12\x36\n\x08priority\x18\x04 \x01(\x0e\x32\x1f.master.GenericRequest.Priority:\x03LOW\x12\'\n\x1breq_additionaldata_donotuse\x18\x05 \x03(\tB\x02\x18\x01\"&\n\x08Priority\x12\x08\n\x04HIGH\x10\x01\x12\x07\n\x03STD\x10\x02\x12\x07\n\x03LOW\x10\x03\"\x92\x01\n\x0fGenericResponse\x12#\n\x03req\x18\x01 \x02(\x0b\x32\x16.master.GenericRequest\x12\x17\n\x0b\x63omputetime\x18\x02 \x02(\x03:\x02-1\x12\x17\n\x0fserver_ipadress\x18\x03 \x01(\t\x12(\n\x1cresp_additionaldata_donotuse\x18\x04 \x03(\tB\x02\x18\x01\"\x1f\n\rSimpleRequest\x12\x0e\n\x06youpla\x18\x01 \x02(\t\"\x1e\n\x0eSimpleResponse\x12\x0c\n\x04\x62oum\x18\x01 \x02(\t\"\x9f\x01\n\nOneRequest\x12!\n\x04type\x18\x01 \x02(\x0e\x32\x13.master.RequestType\x12$\n\x04greq\x18\x02 \x02(\x0b\x32\x16.master.GenericRequest\x12(\n\tsimplereq\x18\x03 \x01(\x0b\x32\x15.master.SimpleRequest\x12\x1e\n\x06\x66ooreq\x18\x04 \x01(\x0b\x32\x0e.master.FooReq\"\x19\n\x06\x46ooReq\x12\x0f\n\x07\x62oisson\x18\x01 \x02(\t\"\x1a\n\x07\x42\x61rResp\x12\x0f\n\x07\x62oisson\x18\x01 \x02(\t\"\xa7\x01\n\x0bOneResponse\x12\"\n\x04type\x18\x01 \x02(\x0e\x32\x14.master.ResponseType\x12&\n\x05gresp\x18\x02 \x02(\x0b\x32\x17.master.GenericResponse\x12*\n\nsimpleresp\x18\x03 \x01(\x0b\x32\x16.master.SimpleResponse\x12 \n\x07\x62\x61rresp\x18\x04 \x01(\x0b\x32\x0f.master.BarResp**\n\x0bRequestType\x12\x12\n\x0eSIMPLE_REQUEST\x10\x01\x12\x07\n\x03\x46OO\x10\x02*,\n\x0cResponseType\x12\x13\n\x0fSIMPLE_RESPONSE\x10\x01\x12\x07\n\x03\x42\x41R\x10\x02')
+  serialized_pb='\n\x14proto_services.proto\x12\x06master\"\xa9\x01\n\x0eGenericRequest\x12\x13\n\x0bservicename\x18\x01 \x02(\t\x12\x0e\n\x06\x63\x61ller\x18\x02 \x02(\t\x12\x10\n\x08ipadress\x18\x03 \x01(\t\x12\x37\n\x08priority\x18\x04 \x01(\x0e\x32\x17.master.RequestPriority:\x0cPRIORITY_LOW\x12\'\n\x1breq_additionaldata_donotuse\x18\x05 \x03(\tB\x02\x18\x01\"\x92\x01\n\x0fGenericResponse\x12#\n\x03req\x18\x01 \x02(\x0b\x32\x16.master.GenericRequest\x12\x17\n\x0b\x63omputetime\x18\x02 \x02(\x02:\x02-1\x12\x17\n\x0fserver_ipadress\x18\x03 \x01(\t\x12(\n\x1cresp_additionaldata_donotuse\x18\x04 \x03(\tB\x02\x18\x01\"\x1f\n\rSimpleRequest\x12\x0e\n\x06youpla\x18\x01 \x02(\t\"\x1e\n\x0eSimpleResponse\x12\x0c\n\x04\x62oum\x18\x01 \x02(\t\"\x9f\x01\n\nOneRequest\x12!\n\x04type\x18\x01 \x02(\x0e\x32\x13.master.RequestType\x12$\n\x04greq\x18\x02 \x02(\x0b\x32\x16.master.GenericRequest\x12(\n\tsimplereq\x18\x03 \x01(\x0b\x32\x15.master.SimpleRequest\x12\x1e\n\x06\x66ooreq\x18\x04 \x01(\x0b\x32\x0e.master.FooReq\"\x19\n\x06\x46ooReq\x12\x0f\n\x07\x62oisson\x18\x01 \x02(\t\"\x1a\n\x07\x42\x61rResp\x12\x0f\n\x07\x62oisson\x18\x01 \x02(\t\"\xa7\x01\n\x0bOneResponse\x12\"\n\x04type\x18\x01 \x02(\x0e\x32\x14.master.ResponseType\x12&\n\x05gresp\x18\x02 \x02(\x0b\x32\x17.master.GenericResponse\x12*\n\nsimpleresp\x18\x03 \x01(\x0b\x32\x16.master.SimpleResponse\x12 \n\x07\x62\x61rresp\x18\x04 \x01(\x0b\x32\x0f.master.BarResp*H\n\x0fRequestPriority\x12\x11\n\rPRIORITY_HIGH\x10\x01\x12\x10\n\x0cPRIORITY_STD\x10\x02\x12\x10\n\x0cPRIORITY_LOW\x10\x03**\n\x0bRequestType\x12\x12\n\x0eSIMPLE_REQUEST\x10\x01\x12\x07\n\x03\x46OO\x10\x02*Z\n\x0cResponseType\x12\x13\n\x0fUNKNOWN_SERVICE\x10\x01\x12\x17\n\x13UNSUPPORTED_SERVICE\x10\x02\x12\x13\n\x0fSIMPLE_RESPONSE\x10\x03\x12\x07\n\x03\x42\x41R\x10\x04')
 
+_REQUESTPRIORITY = _descriptor.EnumDescriptor(
+  name='RequestPriority',
+  full_name='master.RequestPriority',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='PRIORITY_HIGH', index=0, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='PRIORITY_STD', index=1, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='PRIORITY_LOW', index=2, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=805,
+  serialized_end=877,
+)
+
+RequestPriority = enum_type_wrapper.EnumTypeWrapper(_REQUESTPRIORITY)
 _REQUESTTYPE = _descriptor.EnumDescriptor(
   name='RequestType',
   full_name='master.RequestType',
@@ -33,8 +59,8 @@ _REQUESTTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=844,
-  serialized_end=886,
+  serialized_start=879,
+  serialized_end=921,
 )
 
 RequestType = enum_type_wrapper.EnumTypeWrapper(_REQUESTTYPE)
@@ -45,51 +71,39 @@ _RESPONSETYPE = _descriptor.EnumDescriptor(
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='SIMPLE_RESPONSE', index=0, number=1,
+      name='UNKNOWN_SERVICE', index=0, number=1,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='BAR', index=1, number=2,
+      name='UNSUPPORTED_SERVICE', index=1, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SIMPLE_RESPONSE', index=2, number=3,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BAR', index=3, number=4,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=888,
-  serialized_end=932,
+  serialized_start=923,
+  serialized_end=1013,
 )
 
 ResponseType = enum_type_wrapper.EnumTypeWrapper(_RESPONSETYPE)
+PRIORITY_HIGH = 1
+PRIORITY_STD = 2
+PRIORITY_LOW = 3
 SIMPLE_REQUEST = 1
 FOO = 2
-SIMPLE_RESPONSE = 1
-BAR = 2
+UNKNOWN_SERVICE = 1
+UNSUPPORTED_SERVICE = 2
+SIMPLE_RESPONSE = 3
+BAR = 4
 
-
-_GENERICREQUEST_PRIORITY = _descriptor.EnumDescriptor(
-  name='Priority',
-  full_name='master.GenericRequest.Priority',
-  filename=None,
-  file=DESCRIPTOR,
-  values=[
-    _descriptor.EnumValueDescriptor(
-      name='HIGH', index=0, number=1,
-      options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='STD', index=1, number=2,
-      options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='LOW', index=2, number=3,
-      options=None,
-      type=None),
-  ],
-  containing_type=None,
-  options=None,
-  serialized_start=203,
-  serialized_end=241,
-)
 
 
 _GENERICREQUEST = _descriptor.Descriptor(
@@ -139,13 +153,12 @@ _GENERICREQUEST = _descriptor.Descriptor(
   ],
   nested_types=[],
   enum_types=[
-    _GENERICREQUEST_PRIORITY,
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
   serialized_start=33,
-  serialized_end=241,
+  serialized_end=202,
 )
 
 
@@ -165,7 +178,7 @@ _GENERICRESPONSE = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='computetime', full_name='master.GenericResponse.computetime', index=1,
-      number=2, type=3, cpp_type=2, label=2,
+      number=2, type=2, cpp_type=6, label=2,
       has_default_value=True, default_value=-1,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -193,8 +206,8 @@ _GENERICRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=244,
-  serialized_end=390,
+  serialized_start=205,
+  serialized_end=351,
 )
 
 
@@ -221,8 +234,8 @@ _SIMPLEREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=392,
-  serialized_end=423,
+  serialized_start=353,
+  serialized_end=384,
 )
 
 
@@ -249,8 +262,8 @@ _SIMPLERESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=425,
-  serialized_end=455,
+  serialized_start=386,
+  serialized_end=416,
 )
 
 
@@ -298,8 +311,8 @@ _ONEREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=458,
-  serialized_end=617,
+  serialized_start=419,
+  serialized_end=578,
 )
 
 
@@ -326,8 +339,8 @@ _FOOREQ = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=619,
-  serialized_end=644,
+  serialized_start=580,
+  serialized_end=605,
 )
 
 
@@ -354,8 +367,8 @@ _BARRESP = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=646,
-  serialized_end=672,
+  serialized_start=607,
+  serialized_end=633,
 )
 
 
@@ -403,12 +416,11 @@ _ONERESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=675,
-  serialized_end=842,
+  serialized_start=636,
+  serialized_end=803,
 )
 
-_GENERICREQUEST.fields_by_name['priority'].enum_type = _GENERICREQUEST_PRIORITY
-_GENERICREQUEST_PRIORITY.containing_type = _GENERICREQUEST;
+_GENERICREQUEST.fields_by_name['priority'].enum_type = _REQUESTPRIORITY
 _GENERICRESPONSE.fields_by_name['req'].message_type = _GENERICREQUEST
 _ONEREQUEST.fields_by_name['type'].enum_type = _REQUESTTYPE
 _ONEREQUEST.fields_by_name['greq'].message_type = _GENERICREQUEST

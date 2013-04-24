@@ -11,6 +11,9 @@ Broker:
 
 Workers:
 * Adding protobuf support
+* externalize configuration  (zookeeper)
+* enabled service declaration to the broker
+* Garder les objets service en mémoire
 
 Client:
 * Broker config via zookeeper

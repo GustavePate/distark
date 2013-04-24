@@ -13,7 +13,7 @@ indent:
 	$(PYTHON) -m reindent --nobackup *.py
 	
 protoc:
-	$(PROTOC) --python_out=./src/distark/common/protos/ --proto_path=./ressources/common/protos/ ./ressources/common/protos/proto_services.proto
+	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/proto_services.proto
 	
 startbroker:
 	$(PYTHON) -m reindent --nobackup *.py
@@ -31,11 +31,6 @@ startclient:
 all: check test source deb
 
 dist: source deb
-
-
-
-indent:
-	$(PYTHON) setup.py sdist
 
 source:
 	$(PYTHON) setup.py sdist

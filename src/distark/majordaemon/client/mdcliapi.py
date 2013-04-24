@@ -11,7 +11,7 @@ import logging
 
 import zmq
 
-from distark.majordaemon.commons import MDP
+from distark.majordaemon.commons import MDP 
 from distark.majordaemon.commons.zhelpers import dump
 
 class MajorDomoClient(object):

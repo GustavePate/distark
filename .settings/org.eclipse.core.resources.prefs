@@ -1,0 +1,17 @@
+eclipse.preferences.version=1
+encoding//src/distark/commons/client/Main.py=utf-8
+encoding//src/distark/commons/utils/MyConfiguration.py=utf-8
+encoding//src/distark/majordaemon/__init__.py=utf-8
+encoding//src/distark/majordaemon/broker/__init__.py=utf-8
+encoding//src/distark/majordaemon/broker/mdbroker.py=utf-8
+encoding//src/distark/majordaemon/client/__init__.py=utf-8
+encoding//src/distark/majordaemon/client/mdcliapi.py=utf-8
+encoding//src/distark/majordaemon/client/mdclient.py=utf-8
+encoding//src/distark/majordaemon/client/mmiecho.py=utf-8
+encoding//src/distark/majordaemon/commons/MDP.py=utf-8
+encoding//src/distark/majordaemon/commons/__init__.py=utf-8
+encoding//src/distark/majordaemon/commons/zhelpers.py=utf-8
+encoding//src/distark/majordaemon/worker/__init__.py=utf-8
+encoding//src/distark/majordaemon/worker/mdworker.py=utf-8
+encoding//src/distark/majordaemon/worker/mdwrkapi.py=utf-8
+encoding//src/zguide/mspoller.py=utf-8

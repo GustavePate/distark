@@ -1,23 +1,23 @@
 package master;
 
+enum RequestPriority {
+		PRIORITY_HIGH=1;
+		PRIORITY_STD=2;
+		PRIORITY_LOW=3;
+}
+
+
 message GenericRequest {
 	required string servicename =1;
 	required string caller = 2;
 	optional string ipadress =3;
-
-	enum Priority {
-		HIGH=1;
-		STD=2;
-		LOW=3;
-	}
-
-	optional Priority priority=4 [default = LOW];
+	optional RequestPriority priority=4 [default = PRIORITY_LOW];
 	repeated string req_additionaldata_donotuse = 5 [deprecated=true];
 }
 
 message GenericResponse {
 	required GenericRequest req = 1;
-	required int64 computetime = 2 [default=-1];
+	required float computetime = 2 [default=-1.0];
 	optional string server_ipadress = 3;
 	repeated string resp_additionaldata_donotuse = 4 [deprecated=true];
 }
@@ -55,8 +55,11 @@ message BarResp {
 }
 
 enum ResponseType { 
-	SIMPLE_RESPONSE = 1; 
-	BAR = 2;
+	ERROR_UNKNOWN_SERVICE =1;
+	ERROR_UNSUPPORTED_SERVICE =2;
+	ERROR_PARSING_EXCEPTION = 3
+	SIMPLE_RESPONSE = 4; 
+	BAR = 5;
 } 
 
 message OneResponse { 
