@@ -7,17 +7,17 @@ Author : Min RK <benjaminrk@gmail.com>
 """
 import datetime
 import sys
-from distark.majordaemon.client.mdcliapi import MajorDomoClient
+from distark.majordaemon.client.mdcliapi import MajorDomoClient 
 from distark.commons.protos.proto_services_pb2 import OneRequest, OneResponse
 from distark.commons.protos.proto_services_pb2 import SIMPLE_REQUEST
 from distark.commons.protos.proto_services_pb2 import SIMPLE_RESPONSE
-from distark.commons.protos.proto_services_pb2 import UNKNOWN_SERVICE
-from distark.commons.protos.proto_services_pb2 import UNSUPPORTED_SERVICE
+from distark.commons.protos.proto_services_pb2 import ERROR_UNKNOWN_SERVICE
+from distark.commons.protos.proto_services_pb2 import ERROR_UNSUPPORTED_SERVICE
 from distark.commons.protos.proto_services_pb2 import PRIORITY_STD
 from distark.commons.protos.proto_services_pb2 import GenericRequest, GenericResponse
 from distark.commons.protos.proto_services_pb2 import SimpleRequest, SimpleResponse
 
-from distark.commons.utils.NetInfo import NetInfo
+from distark.commons.utils.NetInfo import NetInfo 
 
 my_ip=NetInfo.getIPString()
 NB_REQUEST=10
@@ -48,8 +48,8 @@ def handle_response(oresp):
     
     existing_response = {
                          SIMPLE_RESPONSE: simple_response,
-                         UNKNOWN_SERVICE : retryNtimes,
-                         UNSUPPORTED_SERVICE: retryNtimes,
+                         ERROR_UNKNOWN_SERVICE : retryNtimes,
+                         ERROR_UNSUPPORTED_SERVICE: retryNtimes,
                          }
 
     
@@ -57,7 +57,7 @@ def handle_response(oresp):
     if oresp.type in existing_response.keys():
         oresp=existing_response[oresp.type](oresp)
     else:
-        oresp.type=UNKNOWN_SERVICE
+        oresp.type=ERROR_UNKNOWN_SERVICE
         print "Unknown response type", oresp.type
     
 

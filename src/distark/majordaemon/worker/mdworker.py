@@ -9,12 +9,12 @@ Author: Min RK <benjaminrk@gmail.com>
 
 import sys
 import datetime
-from mdwrkapi import MajorDomoWorker
+from distark.majordaemon.worker.mdwrkapi import MajorDomoWorker
 from distark.commons.protos.proto_services_pb2 import OneRequest, OneResponse
 from distark.commons.protos.proto_services_pb2 import FOO
 from distark.commons.protos.proto_services_pb2 import SIMPLE_REQUEST
 from distark.commons.protos.proto_services_pb2 import SIMPLE_RESPONSE
-from distark.commons.protos.proto_services_pb2 import ERROR_UNKNOWN_SERVICE 
+from distark.commons.protos.proto_services_pb2 import ERROR_UNKNOWN_SERVICE
 from distark.commons.protos.proto_services_pb2 import ERROR_PARSING_EXCEPTION 
 from distark.commons.protos.proto_services_pb2 import GenericRequest, GenericResponse
 from distark.commons.protos.proto_services_pb2 import SimpleRequest, SimpleResponse

@@ -7,7 +7,7 @@ Author : Min RK <benjaminrk@gmail.com>
 """
 
 import sys
-from distark.majordaemon.client.mdcliapi import MajorDomoClient
+from distark.majordaemon.client.mdcliapi import MajorDomoClient 
 
 def main():
     verbose = '-v' in sys.argv

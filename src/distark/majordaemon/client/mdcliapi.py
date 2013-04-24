@@ -6,13 +6,13 @@ Implements the MDP/Worker spec at http:#rfc.zeromq.org/spec:7.
 Author: Min RK <benjaminrk@gmail.com>
 Based on Java example by Arkadiusz Orzechowski
 """
+from distark.majordaemon.commons import MDP
+from distark.majordaemon.commons.zhelpers import dump
 
 import logging
+import zmq 
 
-import zmq
 
-from distark.majordaemon.commons import MDP 
-from distark.majordaemon.commons.zhelpers import dump
 
 class MajorDomoClient(object):
     """Majordomo Protocol Client API, Python version.
