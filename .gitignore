@@ -1,4 +1,5 @@
-/src/zguide
+src/zguide/
+.settings/*
 .settings/
 
 *.py[cod]
