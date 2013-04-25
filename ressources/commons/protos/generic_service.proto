@@ -1,7 +1,6 @@
 package master;
 
 import "services/simple_service.proto";
-import "services/dumb_service.proto";
 
 
 enum PBRequestType { 

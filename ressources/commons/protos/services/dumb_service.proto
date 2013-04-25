@@ -1,7 +1,0 @@
-message PBDumbRequest {
-	optional string iamdumb = 1;
-}
-
-message PBDumbResponse {
-	optional string iamdumb = 1;
-}
