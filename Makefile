@@ -13,7 +13,8 @@ indent:
 	$(PYTHON) -m reindent --nobackup *.py
 	
 protoc:
-	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/proto_services.proto
+	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/generic_service.proto
+	$(PROTOC) --python_out=./src/distark/commons/protos/services/ --proto_path=./ressources/commons/protos/services/ ./ressources/commons/protos/services/*
 	
 startbroker:
 	$(PYTHON) -m reindent --nobackup *.py

@@ -1,0 +1,66 @@
+package master;
+
+import "services/simple_service.proto";
+import "services/dumb_service.proto";
+
+
+enum PBRequestType { 
+	SIMPLE_REQUEST = 1; 
+} 
+
+enum PBResponseType {
+	TECHNICAL_ERROR_RESPONSE = 1;
+	SIMPLE_RESPONSE = 2; 		
+} 
+
+enum PBErrorType {  
+	ERROR_NONE = 1;
+	ERROR_INVALID_ENVELOP = 2;
+	ERROR_PARSING_EXCEPTION = 3;
+	ERROR_UNKNOWN_SERVICE =4;
+	ERROR_UNSUPPORTED_SERVICE =5;	
+} 
+
+
+message PBOneRequest { 
+	// Identifies which field is filled in. 
+	required PBRequestType rtype = 1; 
+	required PBGenericRequest greq = 2; 
+	// One of the following will be filled in. 
+	optional PBSimpleRequest simplereq = 3; 
+}
+
+message PBOneResponse { 
+	// Identifies which field is filled in. 
+	required PBResponseType rtype = 1; 
+	required PBErrorType etype = 2;
+	required PBGenericResponse gresp = 3; 
+	// One of the following will be filled in. 
+	optional PBSimpleResponse simpleresp = 4; 
+}
+
+
+enum PBRequestPriority {
+		PRIORITY_HIGH=1;
+		PRIORITY_STD=2;
+		PRIORITY_LOW=3;
+}
+
+
+message PBGenericRequest {
+	required string servicename =1;
+	required string caller = 2;
+	optional string ipadress =3;
+	optional PBRequestPriority priority=4 [default = PRIORITY_LOW];
+	repeated string req_additionaldata_donotuse = 5 [deprecated=true];
+}
+
+message PBGenericResponse {
+	required PBGenericRequest req = 1;
+	required float computetime = 2 [default=-1.0];
+	optional string server_ipadress = 3;
+	repeated string resp_additionaldata_donotuse = 4 [deprecated=true];
+}
+
+
+

@@ -1,0 +1,7 @@
+message PBSimpleRequest { 
+	required string youpla = 1;
+}
+
+message PBSimpleResponse {
+	required string boum = 1;
+}

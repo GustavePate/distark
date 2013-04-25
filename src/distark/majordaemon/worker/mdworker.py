@@ -9,15 +9,20 @@ Author: Min RK <benjaminrk@gmail.com>
 
 import sys
 import datetime
+import traceback
 from distark.majordaemon.worker.mdwrkapi import MajorDomoWorker
-from distark.commons.protos.proto_services_pb2 import OneRequest, OneResponse
-from distark.commons.protos.proto_services_pb2 import FOO
-from distark.commons.protos.proto_services_pb2 import SIMPLE_REQUEST
-from distark.commons.protos.proto_services_pb2 import SIMPLE_RESPONSE
-from distark.commons.protos.proto_services_pb2 import ERROR_UNKNOWN_SERVICE
-from distark.commons.protos.proto_services_pb2 import ERROR_PARSING_EXCEPTION 
-from distark.commons.protos.proto_services_pb2 import GenericRequest, GenericResponse
-from distark.commons.protos.proto_services_pb2 import SimpleRequest, SimpleResponse
+from distark.commons.protos.generic_service_pb2 import PBOneRequest, PBOneResponse
+from distark.commons.protos.generic_service_pb2 import SIMPLE_REQUEST
+from distark.commons.protos.generic_service_pb2 import SIMPLE_RESPONSE
+from distark.commons.protos.generic_service_pb2 import TECHNICAL_ERROR_RESPONSE 
+from distark.commons.protos.generic_service_pb2 import ERROR_UNKNOWN_SERVICE
+from distark.commons.protos.generic_service_pb2 import ERROR_PARSING_EXCEPTION 
+from distark.commons.protos.generic_service_pb2 import ERROR_INVALID_ENVELOP
+from distark.commons.protos.generic_service_pb2 import ERROR_NONE
+from distark.commons.protos.generic_service_pb2 import PBGenericRequest, PBGenericResponse
+from distark.commons.protos.services.simple_service_pb2 import PBSimpleRequest, PBSimpleResponse
+
+from distark.majordaemon.commons.ZMQUtils import ZMQUtils
 from distark.majordaemon.worker.processors.SimpleProcessor import SimpleProcessor
 
 from distark.commons.utils.NetInfo import NetInfo
@@ -29,70 +34,112 @@ end_working=0
 verbose=False
 services=[]
 
+#IN: PBOneRequest
+#OUT: PBOneResponse
+
 def simple_request(oreq):
     if verbose:
         print "Work on: Simple Request"
-    req=oreq.simplereq
-    processor=SimpleProcessor(req)
-    oresp=OneResponse()
-    oresp.type=SIMPLE_RESPONSE
-    oresp.simpleresp=processor.process()
-    return oresp
+        
+    try:
+        pbsimplereq=oreq.simplereq
+        processor=SimpleProcessor(pbsimplereq)
+        oresp=PBOneResponse()
+        oresp.rtype=SIMPLE_RESPONSE
+        processor.process2(oresp.simpleresp)
+        return oresp
 
-def foo(oreq):
-    if verbose:    
-        print "Work on: Foo"
+    except Exception:
+        print "simple_request: ",Exception
+        traceback.print_exc()
 
+#IN: OneReponse, OneRequest
+#OUT: nothing
+def fillOneResponseGenericFields(oresp,oreq):
+    oresp.gresp.req.servicename=oreq.greq.servicename
+    oresp.gresp.req.caller=oreq.greq.caller
+    oresp.gresp.req.ipadress=oreq.greq.ipadress
+    oresp.gresp.server_ipadress=my_ip
 
-def dispatch(oreq):
+    
+    
+    
+
+#IN: PBOneRequest
+#OUT: PBOneResponse
+def handle_request(oreq):
     
     
     existing_services = {
                          SIMPLE_REQUEST: simple_request,
-                         FOO : foo,
                          }
     #prepare response
-    oresp=OneResponse()
+    oresp=PBOneResponse()
     
     #do the job
-    if oreq.type in existing_services.keys():
-        oresp=existing_services[oreq.type](oreq)
+    if oreq.rtype in existing_services.keys():
+        #TODO: switch case pattern doesn't work
+        #oresp=existing_services[oreq.rtype](oreq)
+        oresp=simple_request(oreq)
+        oresp.etype=ERROR_NONE
     else:
-        oresp.type=ERROR_UNKNOWN_SERVICE
-        print "Unknown service:", oreq.type
+        oresp=error_response(ERROR_UNKNOWN_SERVICE)
+        print "dispatch: Unknown service:", oreq.rtype
         
     #Fill in Generic Response
-    oresp.gresp.req=oreq
-    oresp.gresp.server_ipadress=my_ip
-    
-    end_working=datetime.datetime.now()
-    delta=end_working-start_working   
-    oresp.gresp.computetime=delta.total_seconds()
+    fillOneResponseGenericFields(oresp,oreq)
     
     return oresp
     
     
- 
+def error_response(type):
+    oresp=PBOneResponse() 
+    oresp.rtype=TECHNICAL_ERROR_RESPONSE
+    oresp.etype=type
+    oresp.gresp.req.servicename='idontknow'
+    oresp.gresp.req.caller='idontknow'
+    oresp.gresp.computetime=-1.0
+    oresp.gresp.server_ipadress=my_ip
+    res=oresp.SerializeToString()  
+    return res  
 
-def handle_request(message,verbose):
+#IN: ZMQEnvelop
+#OUT: string
+# if deserialize a success: handle
+# else reply protobuf OneResponse error
+def deserialize_and_reply(request,verbose):
 
-    
     start_working=datetime.datetime.now()
     
-    oreq=OneRequest()
-    try:
-        oreq.ParseFromString(message)
-        print "request received:",oreq.type
-        res=dispatch(oreq).SerializeToString()
-    except:
-        oresp=OneResponse()
-        oresp.type=ERROR_PARSING_EXCEPTION
-        oresp.gresp.req=message
-        oresp.gresp.computetime=-1.0
-        oresp.gresp.server_ipadress=my_ip
-        res=oresp.SerializeToString()
-    finally:
-        return res
+    if not ZMQUtils.is_valid_envelop(request):
+        print 'Invalid Request:', TypeError 
+        res=error_response(ERROR_INVALID_ENVELOP)
+    else:
+        if verbose:
+            print "raw_request",request
+        pboreq=PBOneRequest()
+        res=''
+        try:
+            pboreq = PBOneRequest()
+            pboreq.ParseFromString(request[0])
+            pboresp=handle_request(pboreq)
+            end_working=datetime.datetime.now()
+            delta=end_working-start_working   
+            pboresp.gresp.computetime=delta.total_seconds()
+            res=pboresp.SerializeToString()
+        except TypeError:
+            print 'Exception:', TypeError 
+            traceback.print_exc()
+            res=error_response(ERROR_PARSING_EXCEPTION)
+        except Exception:
+            print 'General Exception:',  Exception
+            traceback.print_exc()
+            res=error_response(ERROR_PARSING_EXCEPTION)
+        finally:
+            if verbose:
+                print 'raw_reply:',res
+            return [res]
+
 
 
 
@@ -110,8 +157,10 @@ def main():
             print "Have to quit, bye !"
             break # Worker was interrupted
         
-        reply = request
-        #reply = handle_request(request,verbose) # Echo is complex... :-)
+        ### Reply Must be in a list !!!!!!
+        reply = deserialize_and_reply(request,verbose) # Echo is complex... :-)
+        
+        
 
 
 if __name__ == '__main__':
