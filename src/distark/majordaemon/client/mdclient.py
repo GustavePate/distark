@@ -26,8 +26,7 @@ from distark.commons.protos.services.simple_service_pb2 import PBSimpleRequest, 
 from distark.commons.utils.NetInfo import NetInfo 
 
 my_ip=NetInfo.getIPString()
-NB_REQUEST=50000
-
+NB_REQUEST=10
 
 #TODO: create a handler in separate file for each request/reply pair 
 #TODO: the handler should take care of transport and serialisation/deserialisation to be used as an API
@@ -48,7 +47,7 @@ def simple_request(youpla):
     
 
 def simple_response(oresp):
-    #print "received: ",oresp.simpleresp.boum
+    print "received: ",oresp.simpleresp.boum
     pass
 
 

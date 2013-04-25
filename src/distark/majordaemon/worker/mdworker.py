@@ -19,8 +19,11 @@ from distark.commons.protos.generic_service_pb2 import ERROR_UNKNOWN_SERVICE
 from distark.commons.protos.generic_service_pb2 import ERROR_PARSING_EXCEPTION 
 from distark.commons.protos.generic_service_pb2 import ERROR_INVALID_ENVELOP
 from distark.commons.protos.generic_service_pb2 import ERROR_NONE
+from distark.commons.protos.generic_service_pb2 import ERROR_REQUEST_HANDLER
+from distark.commons.protos.generic_service_pb2 import PBRequestType
 from distark.commons.protos.generic_service_pb2 import PBGenericRequest, PBGenericResponse
 from distark.commons.protos.services.simple_service_pb2 import PBSimpleRequest, PBSimpleResponse
+from distark.commons.protos.generic_service_pb2 import  _PBREQUESTTYPE as PBRequestType
 
 from distark.majordaemon.commons.ZMQUtils import ZMQUtils
 from distark.majordaemon.worker.processors.SimpleProcessor import SimpleProcessor
@@ -41,17 +44,25 @@ def simple_request(oreq):
     if verbose:
         print "Work on: Simple Request"
         
-    try:
+    oresp=PBOneResponse()  
+    try:   
         pbsimplereq=oreq.simplereq
         processor=SimpleProcessor(pbsimplereq)
-        oresp=PBOneResponse()
+        
         oresp.rtype=SIMPLE_RESPONSE
         processor.process2(oresp.simpleresp)
-        return oresp
+        #a partir de la si il y a une erreur elle est fonctionnelle
+        oresp.etype=ERROR_NONE        
+        
 
     except Exception:
         print "simple_request: ",Exception
         traceback.print_exc()
+        res=error_response(ERROR_REQUEST_HANDLER)
+    finally:
+        return oresp
+        
+        
 
 #IN: OneReponse, OneRequest
 #OUT: nothing
@@ -75,13 +86,14 @@ def handle_request(oreq):
                          }
     #prepare response
     oresp=PBOneResponse()
-    
+    print "handle:",PBRequestType.values_by_number[oreq.rtype].name 
+
     #do the job
     if oreq.rtype in existing_services.keys():
         #TODO: switch case pattern doesn't work
-        #oresp=existing_services[oreq.rtype](oreq)
-        oresp=simple_request(oreq)
-        oresp.etype=ERROR_NONE
+        oresp=existing_services[oreq.rtype](oreq)
+        #oresp=simple_request(oreq)
+        #oresp.etype=ERROR_NONE
     else:
         oresp=error_response(ERROR_UNKNOWN_SERVICE)
         print "dispatch: Unknown service:", oreq.rtype
