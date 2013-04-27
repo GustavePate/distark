@@ -72,10 +72,6 @@ def fillOneResponseGenericFields(oresp,oreq):
     oresp.gresp.req.ipadress=oreq.greq.ipadress
     oresp.gresp.server_ipadress=my_ip
 
-    
-    
-    
-
 #IN: PBOneRequest
 #OUT: PBOneResponse
 def handle_request(oreq):
@@ -88,12 +84,10 @@ def handle_request(oreq):
     oresp=PBOneResponse()
     print "handle:",PBRequestType.values_by_number[oreq.rtype].name 
 
-    #do the job
+    #if exists
     if oreq.rtype in existing_services.keys():
-        #TODO: switch case pattern doesn't work
+        #do the job
         oresp=existing_services[oreq.rtype](oreq)
-        #oresp=simple_request(oreq)
-        #oresp.etype=ERROR_NONE
     else:
         oresp=error_response(ERROR_UNKNOWN_SERVICE)
         print "dispatch: Unknown service:", oreq.rtype
