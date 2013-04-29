@@ -4,6 +4,8 @@ NAME=`python setup.py --name`
 VERSION=`python setup.py --version`
 SDIST=dist/$(NAME)-$(VERSION).tar.gz
 VENV=/tmp/venv
+ZOO=/opt/zookeeper-3.4.5
+
 
 ##############################
 #  my targets
@@ -17,16 +19,25 @@ protoc:
 	$(PROTOC) --python_out=./src/distark/commons/protos/services/ --proto_path=./ressources/commons/protos/services/ ./ressources/commons/protos/services/*
 	
 startbroker:
-	$(PYTHON) -m reindent --nobackup *.py
+	echo "TODO"
 
 startworker:
-	$(PYTHON) -m reindent --nobackup *.py
+	echo "TODO"
 
 startclient:
-	$(PYTHON) -m reindent --nobackup *.py
+	echo "TODO"
+
+zoo:
+	$(ZOO)/bin/zkServer.sh restart
+
+zools:
+	$(ZOO)/bin/zkCli.sh -server localhost:2181
+
+
 
 clean:
 	find . -type f -name "FILE-TO-FIND" -exec rm -f {} \;
+	find . -type f -name "*.pyc" -exec rm -f {} \;
 
 ##############################
 # original targets

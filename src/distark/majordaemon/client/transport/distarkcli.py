@@ -9,8 +9,9 @@ from distark.commons.protos.generic_service_pb2 import PBOneRequest, PBOneRespon
 from distark.commons.utils.NetInfo import NetInfo 
 
 
-from distark.majordaemon.client.transport.transportpool import SimpleRequestTransportStubPool
-from distark.majordaemon.client.transport.transportpool import TransportPool
+from distark.majordaemon.client.transport.transportpool import StubSimpleRequestConnectionPool
+from distark.majordaemon.client.transport.transportpool import NaiveConnectionPool
+from distark.majordaemon.client.transport.transportpool import ConnectionPool
 from time import sleep    
 
 
@@ -24,20 +25,21 @@ class Distarkcli(object):
     __pboreq=None
     
     __pboresp=None
-    __transport=SimpleRequestTransportStubPool().get()    
+    __connection=None
         
-#     #IN: a non list serialized pbmessage 
-#     def __pbresponsehandler(self,pbmessage):
-#         #deserialize
-#         pbresponse=self.__responsetype().ParseFromString(pbmessage)
-#         #set reply
-#         self.__reply=self.__responsetype(pbresponse)
-            
+        
         
     #OUT: PBOnResponse
     def getResponse(self):
         while True:
-            msg=self.__transport.recv()
+            msg=self.__connection.recv()
+            if isinstance(msg,list):
+                if len(msg)==1:
+                    msg=msg[0]
+                else:
+                    #multipart response whe can't handle
+                    raise Exception('Distarkcli: multipart response received')
+                    
             if msg:
                 self.__pboresp=PBOneResponse()
                 self.__pboresp.ParseFromString(msg)
@@ -60,9 +62,15 @@ class Distarkcli(object):
         #prepare OneRequest
         self.__pboreq=PBOneRequest() 
         self.fillinGenericRequest()
-        print self.objreq
+
+        
         self.objreq.fillinPBOneRequest(self.__pboreq)
         #serialize
         msg=self.__pboreq.SerializeToString()
-        self.__transport.send(msg)      
-    
+        #pool=StubSimpleRequestConnectionPool()
+        #pool=NaiveConnectionPool()
+        
+        pool=ConnectionPool()
+        self.__connection=pool.getConnection()
+        #TODO: Fix this "echo" for appropriate service discovery 
+        self.__connection.send("echo",msg)      

@@ -1,3 +1,5 @@
+#encoding: utf-8
+
 '''
 Created on 26 mars 2013
 
@@ -10,6 +12,116 @@ import os
 import urllib
 import subprocess
 import logging
+
+
+class Singleton1():
+    
+    #### begin: make it a singeton
+    instance = None
+    def __new__(cls, *args, **kargs):
+        if not cls._instance:
+            cls.instance = object.__new__(cls, *args, **kargs)
+        return cls.instance
+    #### end: make it a singeton
+       
+    def __init__(self,maxconnection=10):
+        print "INIT SINGLETON1"
+
+
+class  Singleton2 (object):
+    instance = None       # Attribut statique de classe
+    def __new__(laClasse): 
+        "méthode de construction standard en Python"
+        if laClasse.instance is None:
+            laClasse.instance = object.__new__(laClasse)
+        return laClasse.instance
+    
+    def __init__(self,maxconnection=10):
+        print "INIT SINGLETON2"
+
+# Singleton/ClassVariableSingleton.py 
+class SingleTone(object): 
+    __instance = None 
+    def __new__(cls, val): 
+        if SingleTone.__instance is None: 
+            SingleTone.__instance = object.__new__(cls) 
+        SingleTone.__instance.val = val 
+        return SingleTone.__instance
+
+
+class Borg: 
+    __shared_state = {} # variable de classe contenant l'état à partage
+    def __init__(self): 
+        # copie de l'état lors de l'initialisation d'une nouvelle instance
+        self.__dict__ = self.__shared_state 
+    _i=0
+
+    def inc(self):
+        self._i+=1
+
+    def __str__(self):
+        return str(self._i)
+        
+if __name__ == '__main__':
+    sing1=Singleton1()
+    sing2=Singleton1()
+    print 'sing1',sing1
+    print 'sing2',sing2
+    
+    # Utilisation
+    sing1 =  Singleton2()
+    sing2 =  Singleton2()
+     
+    print 'sing1',sing1
+    print 'sing2',sing2
+    # monSingleton1 et monSingleton2 renvoient à la même instance
+    assert sing1 is  sing2    
+    
+    b1=Borg()
+    b1.inc()
+    print 'b1',b1
+    b2=Borg()
+    print 'b2',b2
+    b2.inc()
+    b2.inc()
+    b2.inc()
+    b2.inc()
+    print 'b1',b1
+    assert str(b1) == str(b2)
+
+    # Utilisation
+    sing1 =  SingleTone(1)
+    sing2 =  SingleTone(2)
+     
+    print 'sing1',sing1
+    print 'sing2',sing2
+    # monSingleton1 et monSingleton2 renvoient à la même instance
+    assert sing1 is  sing2    
+
+
+def singleton(cls):
+    instances = {}
+
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+
+    return getinstance
+
+@singleton
+class Singleton4(object):
+    i=0
+    def inc(self):
+        self.i+=1
+
+sing1=Singleton4()
+sing2=Singleton4()
+sing1.inc()
+print sing1
+print sing2
+
+
 
 class Utils(object):
     '''

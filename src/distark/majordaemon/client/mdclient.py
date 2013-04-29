@@ -9,7 +9,7 @@ import datetime
 import sys
 import argparse
 
-from distark.majordaemon.client.transport.mdcliapi import MajorDomoClient 
+from distark.majordaemon.client.transport.majordomoclient import MajorDomoClient 
 from distark.majordaemon.commons.ZMQUtils import ZMQUtils 
 
 

@@ -1,3 +1,4 @@
+#encoding: utf-8
 '''
 Created on 27 avr. 2013
 
@@ -7,29 +8,94 @@ Created on 27 avr. 2013
 from distark.commons.protos.generic_service_pb2 import PBOneRequest, PBOneResponse
 from distark.commons.protos.generic_service_pb2 import SIMPLE_RESPONSE
 from distark.commons.protos.generic_service_pb2 import ERROR_NONE
-from distark.majordaemon.commons.PBUtils import PBUtils
+from distark.majordaemon.commons.PBUtils import PBUtils 
+from distark.majordaemon.client.transport.majordomoclient import MajorDomoClient
 
-class TransportPool():
+
+class ConnectionPool():
+    
+    __availableconnection=[]
+    __busyconnection=[]
+    initialized=False
+    
+    __shared_state = {} # variable de classe contenant l'état à partage
+    def __init__(self,maxconnection=10): 
+        # copie de l'état lors de l'initialisation d'une nouvelle instance
+        self.__dict__ = self.__shared_state     
+        
+        if not(self.initialized):
+            #N MajorDomoClient
+            print "INIT Clients"
+            for _ in range(1,maxconnection):
+                conn=MajorDomoClient("tcp://localhost:5555", False,self)
+                self.__availableconnection.append(conn)
+            self.initialized=True
+  
+    def getConnection(self):
+        if len(self.__availableconnection)>0:
+            conn=self.__availableconnection.pop()
+            self.__busyconnection.append(conn)
+            #print 'added to busy',self.__busyconnection
+            
+            
+            return conn
+        else:
+            raise Exception('ConnectionPool: No more connection available')
+
+
+    def returnToPool(self,conn):
+        #print self
+        
+        #make connection available
+        if conn in self.__busyconnection:
+            self.__availableconnection.append(conn)
+            self.__busyconnection.remove(conn)
+            
+        else:
+            raise Exception('ConnectionPool: ReturnToPool a non busy connection')
+        
+    def __str__(self):
+        tuple=("\nConnectionPool:\nAvailable connections:",str(len(self.__availableconnection)),"\nBusy connections:",str(len(self.__busyconnection)))
+        return ''.join(tuple)
+
+
+
+class NaiveConnectionPool(object):
+    __mdclient=None
+    _instance = None
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(NaiveConnectionPool, cls).__new__(
+                                cls, *args, **kwargs)
+        return cls._instance
     
     def __init__(self):
+        #One MajorDomoClient
+        self.__mdclient=MajorDomoClient("tcp://localhost:5555", False,self)
+        
+    def getConnection(self):
+        return self.__mdclient
+    
+    def returnToPool(self,conn):
         pass
     
-    def get(self):
-        pass
+
+    
+    
 
 
-class SimpleRequestTransportStubPool():
+class StubSimpleRequestConnectionPool():
     
     __oreq=None
     __oresp=None
     
-    def get(self):
+    def getConnection(self):
         return self
     
     def __init__(self):
         pass
     
-    def send(self,msg):
+    def send(self,service,msg):
         if msg:
             self.__oreq=PBOneRequest()
             self.__oreq.ParseFromString(msg)
@@ -50,3 +116,11 @@ class SimpleRequestTransportStubPool():
             PBUtils.dumpOneResponse(self.__oresp)
             res=self.__oresp.SerializeToString()
             return res
+        
+    def close(self):
+        print 'Connection closed'
+        pass
+        
+    def returnToPool(self,conn):
+        print 'Connection closed'
+        pass

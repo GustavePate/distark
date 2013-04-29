@@ -10,6 +10,7 @@ class NetInfo(object):
     '''
     classdocs
     '''
+    systemip=None
 
     def __init__(self):
         '''
@@ -32,4 +33,7 @@ class NetInfo(object):
     @staticmethod
     def getIPString():
         """ return comma delimited string of all the system IPs"""
-        return ",".join(NetInfo.getSystemIps())
+        if not(NetInfo.systemip):
+            NetInfo.systemip=",".join(NetInfo.getSystemIps())
+        return NetInfo.systemip
+        
