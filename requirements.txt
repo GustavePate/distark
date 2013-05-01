@@ -5,3 +5,4 @@ kazoo
 protobuf
 python-dateutil
 pyzmq
+nose

@@ -136,7 +136,6 @@ class ZooBorg(object):
         pass
 
 
-
 def _initclientconf(zb):
     print "initclientconf"
     zb=ZooBorg()
@@ -154,14 +153,7 @@ def _initclientconf(zb):
     zb.zk.ensure_path("/distark/client/conf/conf_reload_trigger")
     print "initclientconf: create distark/client/conf/conf_reload_trigger"
 
-def _test(zb):
-        print "test"
-        print "test: register"
-        zb.registerclient('test_client')
-        print "test: getclientlist"
-        print zb.getClientList()
-        while True:
-            pass
+
 
 if __name__ == '__main__':
     ##############################################
@@ -178,16 +170,11 @@ if __name__ == '__main__':
     zb=None
     zb=ZooBorg()
     try:
-        if args.do == 'test':
-            _test(zb)
-        elif args.do == 'initclientconf':
+        if args.do == 'initclientconf':
             _initclientconf(zb)
 
         elif args.do == 'initall':
             _initclientconf(zb)
-        elif args.do == 'all':
-            _initclientconf(zb)
-            _test(zb)
         else:
             print 'do nothing !!!'
 
@@ -197,4 +184,4 @@ if __name__ == '__main__':
     finally:
         zb.unregisterclient('test_client')
         zb.close()
-        
+

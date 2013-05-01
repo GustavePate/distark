@@ -33,7 +33,12 @@ zoo:
 zools:
 	$(ZOO)/bin/zkCli.sh -server localhost:2181
 
+test.travis:
+	nosetests --processes=-1 -a '!slow','!fullstack'
 
+test:
+	nosetests --processes=-1
+	#unit2 discover -s tests -t .
 
 clean:
 	find . -type f -name "FILE-TO-FIND" -exec rm -f {} \;
@@ -58,8 +63,6 @@ rpm:
 install:
 	$(PYTHON) setup.py install --install-layout=deb
 
-test:
-	unit2 discover -s tests -t .
 
 check:
 	find . -name \*.py | grep -v "^test_" | xargs pylint --errors-only --reports=n
