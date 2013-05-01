@@ -11,7 +11,7 @@ from distark.commons.utils.NetInfo import NetInfo
 
 from distark.majordaemon.client.transport.transportpool import StubSimpleRequestConnectionPool
 from distark.majordaemon.client.transport.transportpool import NaiveConnectionPool
-from distark.majordaemon.client.transport.transportpool import ConnectionPool
+from distark.majordaemon.client.transport.transportpool import ConnectionPoolBorg
 from time import sleep    
 
 
@@ -70,7 +70,7 @@ class Distarkcli(object):
         #pool=StubSimpleRequestConnectionPool()
         #pool=NaiveConnectionPool()
         
-        pool=ConnectionPool()
+        pool=ConnectionPoolBorg()
         self.__connection=pool.getConnection()
         #TODO: Fix this "echo" for appropriate service discovery 
         self.__connection.send("echo",msg)      

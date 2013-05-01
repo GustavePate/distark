@@ -12,7 +12,7 @@ from distark.majordaemon.commons.PBUtils import PBUtils
 from distark.majordaemon.client.transport.majordomoclient import MajorDomoClient
 
 
-class ConnectionPool():
+class ConnectionPoolBorg():
     
     __availableconnection=[]
     __busyconnection=[]
@@ -25,7 +25,7 @@ class ConnectionPool():
         
         if not(self.initialized):
             #N MajorDomoClient
-            print "INIT Clients"
+            print "INIT ConnectionPool"
             for _ in range(1,maxconnection):
                 conn=MajorDomoClient("tcp://localhost:5555", False,self)
                 self.__availableconnection.append(conn)

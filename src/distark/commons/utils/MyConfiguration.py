@@ -14,7 +14,7 @@ class Configuration(object):
     logger=''
     initialized=False
     settings={}
-    
+    ok=''    
 
     def __init__(self,confpath=None):
         '''
@@ -47,8 +47,11 @@ class Configuration(object):
             
                 
                 
-    def get(self):
-        return self.settings
+    @staticmethod
+    def get():
+        if not Configuration.initialized:
+            init=Configuration()
+        return Configuration.settings
         
     @staticmethod
     def getInit():
@@ -66,5 +69,5 @@ class Configuration(object):
         res="/"
         for e in basepath:
             res=os.path.join(res,e)
-        confpath=os.path.join(res,'ressources/common/conf/configuration.yaml')
+        confpath=os.path.join(res,'ressources/commons/conf/configuration.yaml')
         return confpath

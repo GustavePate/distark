@@ -6,6 +6,7 @@ Created on 27 avr. 2013
 import datetime
 import sys
 import argparse
+from distark.commons.utils.MyConfiguration import Configuration
 from distark.majordaemon.client.services.simpleservice import  SimpleService,SimpleRequest,SimpleResponse
 
 class Caller(object):
@@ -41,7 +42,6 @@ if __name__ == '__main__':
     ##############################################
     #     ARGUMENTS PARSING
     ##############################################
-
     parser = argparse.ArgumentParser(description='Send requests')
     parser.add_argument('numreq', help='number of request to send', type=int)
     parser.add_argument('-c', '--content', help='content data to send to simple request', type=str)
@@ -59,6 +59,9 @@ if __name__ == '__main__':
     content = args.content
     verbose = args.verbose
     NB_REQUEST=args.numreq   
+    
+    #init conf
+    print Configuration.get()
     
     start_launcher=datetime.datetime.now() 
     
