@@ -34,10 +34,10 @@ zools:
 	$(ZOO)/bin/zkCli.sh -server localhost:2181
 
 test.travis:
-	nosetests --processes=-1 -a '!slow','!fullstack'
+	nosetests -a '!slow','!fullstack' -d
 
 test:
-	nosetests --processes=-1
+	nosetests  -d --with-id -v 
 	#unit2 discover -s tests -t .
 
 clean:

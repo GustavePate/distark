@@ -3,7 +3,6 @@ from nose.plugins.attrib import attr
 import traceback
 import unittest
 
-
 @attr('fullstack')
 def testclient():  
     zb=None
