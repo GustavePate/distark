@@ -6,3 +6,4 @@ protobuf
 python-dateutil
 pyzmq
 nose
+pytest

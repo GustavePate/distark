@@ -34,10 +34,13 @@ zools:
 	$(ZOO)/bin/zkCli.sh -server localhost:2181
 
 test.travis:
-	nosetests -a '!slow','!fullstack' -d
+	py.test --maxfail=5 --showlocals --duration=2 -v -m "not slow and not fullstack"
+	#nosetests -a '!slow','!fullstack' -d
+	#py.test -k ic
 
 test:
-	nosetests  -d --with-id -v 
+	py.test --maxfail=5 --showlocals --duration=2 -v -s
+	#nosetests  -d --with-id -v 
 	#unit2 discover -s tests -t .
 
 clean:
