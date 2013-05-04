@@ -1,0 +1,7 @@
+message PBAnotherRequest { 
+	required string request_str = 1;
+}
+
+message PBAnotherResponse {
+	required string response_str = 1;
+}

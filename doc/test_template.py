@@ -41,7 +41,7 @@ class TestTemplate(object):
     @py.test.mark.slow
     def test_marked_as_slow(self):
         assert 'slow' == 'slow'
-        sleep(1)
+        sleep(0.1)
 
     @py.test.mark.fullstack
     def test_marked_as_fullstack(self):

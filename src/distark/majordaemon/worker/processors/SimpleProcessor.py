@@ -24,9 +24,5 @@ class SimpleProcessor(object):
         self.resp = PBSimpleResponse()
         self.req = req
 
-    def process2(self, simpleresp):
+    def process(self, simpleresp):
         simpleresp.boum = ''.join(reversed(self.req.youpla))
-
-    def process(self):
-        self.resp.boum = ''.join(reversed(self.req.youpla))
-        return self.resp

@@ -1,15 +1,18 @@
 package master;
 
 import "services/simple_service.proto";
+import "services/another_service.proto";
 
 
 enum PBRequestType { 
 	SIMPLE_REQUEST = 1; 
+	ANOTHER_REQUEST = 2; 
 } 
 
 enum PBResponseType {
 	TECHNICAL_ERROR_RESPONSE = 1;
 	SIMPLE_RESPONSE = 2; 		
+	ANOTHER_RESPONSE = 3; 		
 } 
 
 enum PBErrorType {  
@@ -27,7 +30,8 @@ message PBOneRequest {
 	required PBRequestType rtype = 1; 
 	required PBGenericRequest greq = 2; 
 	// One of the following will be filled in. 
-	optional PBSimpleRequest simplereq = 3; 
+	optional PBSimpleRequest simplereq = 3;
+	optional PBAnotherRequest anotherreq = 4;
 }
 
 message PBOneResponse { 
@@ -37,6 +41,7 @@ message PBOneResponse {
 	required PBGenericResponse gresp = 3; 
 	// One of the following will be filled in. 
 	optional PBSimpleResponse simpleresp = 4; 
+	optional PBAnotherResponse anotherresp = 5;
 }
 
 
