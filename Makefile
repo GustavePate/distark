@@ -35,13 +35,12 @@ zools:
 
 test.travis:
 	py.test --maxfail=5 --showlocals --duration=2 -v -m "not slow and not fullstack"
-	#nosetests -a '!slow','!fullstack' -d
-	#py.test -k ic
+
+test.qa:
+	py.test --cov src/
 
 test:
-	py.test --maxfail=5 --showlocals --duration=2 -v -s
-	#nosetests  -d --with-id -v 
-	#unit2 discover -s tests -t .
+	py.test --maxfail=5 --showlocals --pep8 --clearcache --duration=3 -v -s 
 
 clean:
 	find . -type f -name "FILE-TO-FIND" -exec rm -f {} \;

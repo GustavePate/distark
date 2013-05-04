@@ -1,4 +1,4 @@
-#encoding: utf-8
+# encoding: utf-8
 """Majordomo Protocol Client API, Python version.
 
 Implements the MDP/Worker spec at http:#rfc.zeromq.org/spec:7.
@@ -10,8 +10,7 @@ from distark.majordaemon.commons import MDP
 from distark.majordaemon.commons.zhelpers import dump
 
 import logging
-import zmq 
-
+import zmq
 
 
 class MajorDomoClient(object):
@@ -26,25 +25,25 @@ class MajorDomoClient(object):
     timeout = 2500
     verbose = False
 
-    def __init__(self, broker, verbose=False,pool=None):
-        self.pool=pool
+    def __init__(self, broker, verbose=False, pool=None):
+        self.pool = pool
         self.broker = broker
         self.verbose = verbose
         self.ctx = zmq.Context()
         self.poller = zmq.Poller()
-        logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S",
-                level=logging.INFO)
+        logging.basicConfig(format="%(asctime)s %(message)s",
+                            datefmt="%Y-%m-%d %H:%M:%S",
+                            level=logging.INFO)
         self.reconnect_to_broker()
-        
+
     def close(self):
         if self.pool:
             self.pool.returnToPool(self)
 
-
     def reconnect_to_broker(self):
         """Connect or reconnect to broker"""
         print "CONNECT !"
-        
+
         if self.client:
             self.poller.unregister(self.client)
             self.client.close()
@@ -77,7 +76,7 @@ class MajorDomoClient(object):
         try:
             items = self.poller.poll(self.timeout)
         except KeyboardInterrupt:
-            return # interrupted
+            return  # interrupted
 
         if items:
             # if we got a reply, process it
@@ -90,13 +89,15 @@ class MajorDomoClient(object):
             # Don't try to handle errors, just assert noisily
             assert len(msg) >= 4
 
-            empty = msg.pop(0)
+            #first drop will be drop (cause empty)
+            header = msg.pop(0)
             header = msg.pop(0)
             assert MDP.C_CLIENT == header
 
-            service = msg.pop(0)
-            
+            #this one contains servicename
+            #TODO: exploit this
+            header = msg.pop(0)
+
             return msg
         else:
             logging.warn("W: permanent error, abandoning request")
-            

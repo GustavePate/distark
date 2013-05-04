@@ -6,11 +6,12 @@ Created on 24 avr. 2013
 
 import netinfo
 
+
 class NetInfo(object):
     '''
     classdocs
     '''
-    systemip=None
+    systemip = None
 
     def __init__(self):
         '''
@@ -19,7 +20,7 @@ class NetInfo(object):
     @staticmethod
     def getSystemIfs():
         return netinfo.list_active_devs()
-    
+
     @staticmethod
     def getSystemIps():
         """ will not return the localhost one """
@@ -29,11 +30,10 @@ class NetInfo(object):
                 ip = netinfo.get_ip(interface)
                 IPs.append(ip)
         return IPs
-    
+
     @staticmethod
     def getIPString():
         """ return comma delimited string of all the system IPs"""
         if not(NetInfo.systemip):
-            NetInfo.systemip=",".join(NetInfo.getSystemIps())
+            NetInfo.systemip = ",".join(NetInfo.getSystemIps())
         return NetInfo.systemip
-        

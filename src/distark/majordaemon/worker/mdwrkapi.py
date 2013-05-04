@@ -1,4 +1,4 @@
-#encoding: utf-8
+# encoding: utf-8
 
 """Majordomo Protocol Worker API, Python version
 
@@ -15,28 +15,29 @@ import zmq
 from distark.majordaemon.commons import MDP
 from distark.majordaemon.commons.zhelpers import dump
 
+
 class MajorDomoWorker(object):
     """Majordomo Protocol Worker API, Python version
 
     Implements the MDP/Worker spec at http:#rfc.zeromq.org/spec:7.
     """
 
-    HEARTBEAT_LIVENESS = 3 # 3-5 is reasonable
+    HEARTBEAT_LIVENESS = 3  # 3-5 is reasonable
     broker = None
     ctx = None
     service = None
 
-    worker = None # Socket to broker
-    heartbeat_at = 0 # When to send HEARTBEAT (relative to time.time(), so in seconds)
-    liveness = 0 # How many attempts left
-    heartbeat = 2500 # Heartbeat delay, msecs
-    reconnect = 2500 # Reconnect delay, msecs
+    worker = None  # Socket to broker
+    heartbeat_at = 0  # When to send HEARTBEAT (relative to time.time(), so in seconds)
+    liveness = 0  # How many attempts left
+    heartbeat = 2500  # Heartbeat delay, msecs
+    reconnect = 2500  # Reconnect delay, msecs
 
     # Internal state
-    expect_reply = False # False only at start
+    expect_reply = False  # False only at start
 
-    timeout = 2500 # poller timeout
-    verbose = False # Print activity to stdout
+    timeout = 2500  # poller timeout
+    verbose = False  # Print activity to stdout
 
     # Return address, if any
     reply_to = None
@@ -48,9 +49,8 @@ class MajorDomoWorker(object):
         self.ctx = zmq.Context()
         self.poller = zmq.Poller()
         logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S",
-                level=logging.INFO)
+                            level=logging.INFO)
         self.reconnect_to_broker()
-
 
     def reconnect_to_broker(self):
         """Connect or reconnect to broker"""
@@ -71,7 +71,6 @@ class MajorDomoWorker(object):
         self.liveness = self.HEARTBEAT_LIVENESS
         self.heartbeat_at = time.time() + 1e-3 * self.heartbeat
 
-
     def send_to_broker(self, command, option=None, msg=None):
         """Send message to broker.
 
@@ -91,7 +90,6 @@ class MajorDomoWorker(object):
             dump(msg)
         self.worker.send_multipart(msg)
 
-
     def recv(self, reply=None):
         """Send reply, if any, to broker and wait for next request."""
         # Format and send the reply if we were provided one
@@ -109,7 +107,7 @@ class MajorDomoWorker(object):
             try:
                 items = self.poller.poll(self.timeout)
             except KeyboardInterrupt:
-                break # Interrupted
+                break  # Interrupted
 
             if items:
                 msg = self.worker.recv_multipart()
@@ -135,13 +133,13 @@ class MajorDomoWorker(object):
                     # pop empty
                     assert msg.pop(0) == ''
 
-                    return msg # We have a request to process
+                    return msg  # We have a request to process
                 elif command == MDP.W_HEARTBEAT:
                     # Do nothing for heartbeats
                     pass
                 elif command == MDP.W_DISCONNECT:
                     self.reconnect_to_broker()
-                else :
+                else:
                     logging.error("E: invalid input message: ")
                     dump(msg)
 
@@ -151,7 +149,7 @@ class MajorDomoWorker(object):
                     if self.verbose:
                         logging.warn("W: disconnected from broker - retrying...")
                     try:
-                        time.sleep(1e-3*self.reconnect)
+                        time.sleep(1e-3 * self.reconnect)
                     except KeyboardInterrupt:
                         break
                     self.reconnect_to_broker()
@@ -159,11 +157,10 @@ class MajorDomoWorker(object):
             # Send HEARTBEAT if it's time
             if time.time() > self.heartbeat_at:
                 self.send_to_broker(MDP.W_HEARTBEAT)
-                self.heartbeat_at = time.time() + 1e-3*self.heartbeat
+                self.heartbeat_at = time.time() + 1e-3 * self.heartbeat
 
         logging.warn("W: interrupt received, killing worker...")
         return None
-
 
     def destroy(self):
         # context.destroy depends on pyzmq >= 2.1.10

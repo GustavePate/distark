@@ -6,23 +6,23 @@ Created on 26 mars 2013
 
 from logging import Logger
 
+
 class Log(object):
     '''
     classdocs
     '''
 
-    logger=Logger()
-    
+    logger = Logger()
+
     def __init__(self):
         '''
         Constructor
         '''
         pass
-    
-    def setLogger(self,logger):
-        self.logger=logger
-        
-    def info(self,text):
+
+    def setLogger(self, logger):
+        self.logger = logger
+
+    def info(self, text):
         print text
         self.logger.info(text)
-        

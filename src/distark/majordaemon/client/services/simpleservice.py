@@ -4,11 +4,10 @@ Created on 25 avr. 2013
 
 @author: guillaume
 '''
-
-
 from distark.commons.protos.generic_service_pb2 import SIMPLE_REQUEST
 from distark.commons.protos.generic_service_pb2 import SIMPLE_RESPONSE
 from distark.majordaemon.client.transport.distarkcli import Distarkcli
+
 
 class SimpleRequest():
 
@@ -17,26 +16,25 @@ class SimpleRequest():
     def getYoupla(self):
         return self.__youpla
 
-
     def setYoupla(self, value):
         self.__youpla = value
-        
+
     #IN: OneRequest
-    def fillinPBOneRequest(self,pbonereq):
+    def fillinPBOneRequest(self, pbonereq):
         pbonereq.rtype=SIMPLE_REQUEST
         pbonereq.simplereq.youpla=self.__youpla
 
     youpla = property(getYoupla, setYoupla, None, None)
-    
+
 
 class SimpleResponse():
 
     __boum=''
 
     #IN: OneResponse
-    def __init__(self,pboneresponse=None):
+    def __init__(self, pboneresponse=None):
         #TODO: test rtype
-        
+
         if pboneresponse:
             if pboneresponse.rtype == SIMPLE_RESPONSE:
                 self.__boum=pboneresponse.simpleresp.boum
@@ -46,11 +44,11 @@ class SimpleResponse():
     def getBoum(self):
         return self.__boum
 
-
     def setBoum(self, value):
         self.__boum = value
 
     boum = property(getBoum, setBoum, None, None)
+
 
 class SimpleService(Distarkcli):
     '''
@@ -60,24 +58,10 @@ class SimpleService(Distarkcli):
     '''
 
     associated_pb_response=SIMPLE_RESPONSE
-    
-    def __init__(self,simplerequest):
+
+    def __init__(self, simplerequest):
         self.objreq=simplerequest
         self.pbresptype=self.associated_pb_response
         self.pbrespHandler=SimpleResponse
         self.serviceName='SimpleService'
-        self.send()        
-  
-    
-
-    
-
-
-
-
-        
-
-    
-
-
-        
+        self.send()
