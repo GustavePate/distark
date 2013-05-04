@@ -1,6 +1,7 @@
 src/zguide/
 .settings/*
 .settings/
+.cache/
 *un~
 zookeeper.out
 
