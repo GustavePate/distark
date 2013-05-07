@@ -1,9 +1,11 @@
-from ..zoo import ZooBorg
-from nose.plugins.attrib import attr
+from distark.commons.utils.zoo import ZooBorg
 import traceback
+import pytest
+import py
 
 
-@attr('fullstack')
+@pytest.mark.usefixtures("infraup")
+@py.test.mark.fullstack
 def testclient():
     zb = None
     zb = ZooBorg()
@@ -21,7 +23,3 @@ def testclient():
     finally:
         zb.unregisterclient('test_client')
         zb.close()
-
-
-def testsimple():
-    assert None is None

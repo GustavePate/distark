@@ -41,6 +41,7 @@ class MajorDomoWorker(object):
 
     # Return address, if any
     reply_to = None
+    _terminated = False
 
     def __init__(self, broker, service, verbose=False):
         self.broker = broker
@@ -65,8 +66,8 @@ class MajorDomoWorker(object):
             logging.info("I: connecting to broker at %s...", self.broker)
 
         # Register service with broker
-        self.send_to_broker(MDP.W_READY, self.service, [])
 
+        self.send_to_broker(MDP.W_READY, self.service, [])
         # If liveness hits zero, queue is considered disconnected
         self.liveness = self.HEARTBEAT_LIVENESS
         self.heartbeat_at = time.time() + 1e-3 * self.heartbeat
@@ -90,6 +91,9 @@ class MajorDomoWorker(object):
             dump(msg)
         self.worker.send_multipart(msg)
 
+    def stop(self):
+        self._terminated = True
+
     def recv(self, reply=None):
         """Send reply, if any, to broker and wait for next request."""
         # Format and send the reply if we were provided one
@@ -105,7 +109,10 @@ class MajorDomoWorker(object):
         while True:
             # Poll socket for a reply, with timeout
             try:
-                items = self.poller.poll(self.timeout)
+                if not(self._terminated):
+                    items = self.poller.poll(self.timeout)
+                else:
+                    break
             except KeyboardInterrupt:
                 break  # Interrupted
 

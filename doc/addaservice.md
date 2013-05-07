@@ -22,6 +22,10 @@
 * create a test_servicenameservice.py must contain:
 * a TestServiceNameService class
 * with a test_servicenameservice method marked as fullstack
+* this method mist only call a callservicenameservice method
+
+##### goto test/load/funkysimple.py
+* add a call to test_servicenameservice.call* with a probability
 
 ##### goto src/distark/majordaemon/client/worker/processor
 * create a servicenameprocessor.py must contain:
@@ -34,4 +38,7 @@
 * add the mapping request_type / handler in the existing_services dic of handle_request
 
 make test
+make loadtest
+make loadbench
+
 Done!

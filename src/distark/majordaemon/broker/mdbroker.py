@@ -69,7 +69,7 @@ class MajorDomoBroker(object):
     workers = None  # known workers
     waiting = None  # idle workers
     nb_client_request = 0
-
+    _terminated=False
     verbose = False  # Print activity to stdout
 
     # ---------------------------------------------------------------------
@@ -90,12 +90,21 @@ class MajorDomoBroker(object):
                             level=logging.INFO)
 
     # ---------------------------------------------------------------------
+    def stop(self):
+        self._terminated=True
+
+    # ---------------------------------------------------------------------
     def mediate(self):
         """Main broker work happens here"""
         while True:
             try:
-                items = self.poller.poll(self.HEARTBEAT_INTERVAL)
+                if not(self._terminated):
+                    items = self.poller.poll(self.HEARTBEAT_INTERVAL)
+                else:
+                    print "Quit broker sucessfully: terminated !"
+                    break
             except KeyboardInterrupt:
+                print "Quit broker sucessfully: keyboard !"
                 break  # Interrupted
             if items:
                 msg = self.socket.recv_multipart()
@@ -306,12 +315,13 @@ class MajorDomoBroker(object):
         Metrics.inc(Metrics.BROKER_out_nb_worker_request)
 
 
-def main():
-    """create and start new broker"""
-    verbose = '-v' in sys.argv
+def main(verbose=False):
+    """create and staùrt new broker"""
     broker = MajorDomoBroker(verbose)
     broker.bind("tcp://*:5555")
-    broker.mediate()
+    return broker
 
 if __name__ == '__main__':
-    main()
+    verbose = '-v' in sys.argv
+    brok=main(verbose)
+    brok.mediate()

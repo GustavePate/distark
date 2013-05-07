@@ -1,6 +1,9 @@
 src/zguide/
-.settings/*
+tests/load/*xml*
+tests/load/*log
+tests/load/reports/*
 .settings/
+.settings/*
 .cache/
 *un~
 zookeeper.out

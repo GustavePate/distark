@@ -13,21 +13,6 @@ import subprocess
 import logging
 
 
-class Singleton1():
-
-    #### begin: make it a singeton
-    instance = None
-
-    def __new__(cls, *args, **kargs):
-        if not cls._instance:
-            cls.instance = object.__new__(cls, *args, **kargs)
-        return cls.instance
-    #### end: make it a singeton
-
-    def __init__(self, maxconnection=10):
-        print "INIT SINGLETON1"
-
-
 class Singleton2(object):
     instance = None  # Attribut statique de classe
 
@@ -66,11 +51,27 @@ class Borg:
     def __str__(self):
         return str(self._i)
 
-if __name__ == '__main__':
-    sing1=Singleton1()
-    sing2=Singleton1()
-    print 'sing1', sing1
-    print 'sing2', sing2
+
+def singleton(cls):
+    instances = {}
+
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+
+    return getinstance
+
+
+@singleton
+class Singleton4(object):
+    i=0
+
+    def inc(self):
+        self.i+=1
+
+
+def test_singleton_patterns():
     # Utilisation
     sing1 = Singleton2()
     sing2 = Singleton2()
@@ -100,30 +101,10 @@ if __name__ == '__main__':
     # monSingleton1 et monSingleton2 renvoient à la même instance
     assert sing1 is sing2
 
-
-def singleton(cls):
-    instances = {}
-
-    def getinstance():
-        if cls not in instances:
-            instances[cls] = cls()
-        return instances[cls]
-
-    return getinstance
-
-
-@singleton
-class Singleton4(object):
-    i=0
-
-    def inc(self):
-        self.i+=1
-
-sing1=Singleton4()
-sing2=Singleton4()
-sing1.inc()
-print sing1
-print sing2
+    sing1=Singleton4()
+    sing2=Singleton4()
+    sing1.inc()
+    assert sing1 is sing2
 
 
 class Utils(object):

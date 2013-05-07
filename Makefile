@@ -39,8 +39,24 @@ test.travis:
 test.qa:
 	py.test --cov src/
 
+loadbench:
+	make -C tests/load/ -f ../../Makefile loadbench.real
+
+loadbench.real:
+	#fl-run-bench -c 1:3:5:7:9 tests/load/funkysimple.py FunkySimple.test_simple
+	fl-run-bench -c 1:2 tests/load/funkysimple.py FunkySimple.test_simple
+	fl-build-report --html simple-bench.xml
+	#serve it
+	python -m SimpleHTTPServer 8080 &
+
+loadtest:
+	make -C tests/load/ -f ../../Makefile loadtest.real
+
+loadtest.real:
+	fl-run-test -dv tests/load/funkysimple.py
+
 test:
-	py.test --maxfail=5 --showlocals --pep8 --clearcache --duration=3 -v -s 
+	py.test --maxfail=5 --showlocals --pep8  --duration=3 -v --clearcache  -s 
 
 clean:
 	find . -type f -name "FILE-TO-FIND" -exec rm -f {} \;

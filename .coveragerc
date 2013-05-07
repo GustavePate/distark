@@ -1,5 +1,5 @@
 [run]
-omit = *_init__.py,src/distark/majordaemon/test/*
+omit = *_init__.py,src/distark/majordaemon/test/*,src/sandbox/*,src/distark/commons/protos/*
 
 
 

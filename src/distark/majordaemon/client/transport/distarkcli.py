@@ -25,26 +25,24 @@ class Distarkcli(object):
 
     # OUT: PBOnResponse
     def getResponse(self):
-        while True:
-            msg = self.__connection.recv()
-            if isinstance(msg, list):
-                if len(msg) == 1:
-                    msg = msg[0]
-                else:
-                    # multipart response whe can't handle
-                    raise Exception('Distarkcli: multipart response received')
+        msg = self.__connection.recv()
+        if isinstance(msg, list):
+            if len(msg) == 1:
+                msg = msg[0]
+            else:
+                # multipart response whe can't handle
+                raise Exception('Distarkcli: multipart response received')
 
-            if msg:
-                self.__pboresp = PBOneResponse()
-                self.__pboresp.ParseFromString(msg)
-                # soit une reponse au service, soit une erreur
-                if (self.__pboresp.rtype == self.pbresptype):
-                    return [self.__pboresp.rtype, self.pbrespHandler(self.__pboresp)]
-                else:
-                    return [self.__pboresp.rtype, self.__pboresp]
+        if msg:
+            self.__pboresp = PBOneResponse()
+            self.__pboresp.ParseFromString(msg)
+            # soit une reponse au service, soit une erreur
+            if (self.__pboresp.rtype == self.pbresptype):
+                return [self.__pboresp.rtype, self.pbrespHandler(self.__pboresp)]
+            else:
+                return [self.__pboresp.rtype, self.__pboresp]
 
-            # sleep 1 ms
-            sleep(0.001)
+        raise Exception('distarkcli: timout')
 
     def fillinGenericRequest(self):
         self.__pboreq.greq.servicename = self.serviceName
