@@ -11,6 +11,8 @@ import datetime
 import traceback
 from distark.majordaemon.worker.mdwrkapi import MajorDomoWorker
 from distark.commons.utils.NetInfo import NetInfo
+from distark.commons.utils.MyConfiguration import Configuration
+from distark.commons.utils.zoo import ZooBorg
 from distark.majordaemon.commons.ZMQUtils import ZMQUtils
 
 from distark.commons.protos.generic_service_pb2 import PBOneRequest
@@ -52,6 +54,8 @@ class Worker(object):
     verbose = False
     services = []
     _terminated = False
+    uniqid = ''
+    _isup = False
 
     existing_services = {
         SIMPLE_REQUEST: simple_request_handler,
@@ -120,6 +124,7 @@ class Worker(object):
         reply = None
         while True:
             if not(self._terminated):
+                self._isup = True
                 request = self.worker.recv(reply)
             else:
                 request = None
@@ -134,9 +139,27 @@ class Worker(object):
         self.worker.stop()
         self._terminated = True
 
+    def zoo_conf_changed(self, data, stat):
+        print 'worker conf has changed !!!'
+        pass
+
+    def isup(self):
+        if not(self._terminated):
+            return self._isup
+        else:
+            return False
+
     def __init__(self, verbose=False):
+        # TODO: add uniq id
+        self.uniqid = 'uniqid'
         self.verbose = verbose
-        self.worker = MajorDomoWorker("tcp://localhost:5555", "echo", self.verbose)
+        zb = ZooBorg(Configuration.getworker()['zookeeper']['ip'],
+                     Configuration.getworker()['zookeeper']['port'])
+        addconf = zb.getConf(ZooBorg.WORKER)
+        con_str = addconf['broker']['connectionstr']
+        # zb.register(ZooBorg.WORKER, self.uniqid, self.zoo_conf_changed)
+
+        self.worker = MajorDomoWorker(con_str, "echo", self.verbose)
 
 
 def main():

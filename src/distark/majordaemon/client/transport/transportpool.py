@@ -11,6 +11,8 @@ from distark.commons.protos.generic_service_pb2 import SIMPLE_RESPONSE
 from distark.commons.protos.generic_service_pb2 import ERROR_NONE
 from distark.majordaemon.commons.PBUtils import PBUtils
 from distark.majordaemon.client.transport.majordomoclient import MajorDomoClient
+from distark.commons.utils.MyConfiguration import Configuration
+from distark.commons.utils.zoo import ZooBorg
 
 
 class ConnectionPoolBorg():
@@ -26,8 +28,13 @@ class ConnectionPoolBorg():
         if not(self.initialized):
             #N MajorDomoClient
             print "INIT ConnectionPool"
+            zb = ZooBorg(Configuration.getclient()['zookeeper']['ip'],
+                         Configuration.getclient()['zookeeper']['port'])
+            zooconf = zb.getConf(ZooBorg.CLIENT)
+            connection_str=zooconf['broker']['connectionstr']
+            print connection_str
             for _ in range(1, maxconnection):
-                conn=MajorDomoClient("tcp://localhost:5555", False, self)
+                conn=MajorDomoClient(connection_str, False, self)
                 self.__availableconnection.append(conn)
             self.initialized=True
 

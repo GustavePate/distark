@@ -5,8 +5,19 @@
     'zookeeper':{
         'ip':'127.0.0.1',
         'port':'2181'
-    },
-    'majordaemon_url':'tcp://localhost:8081'
+    }
+},
+'worker':{
+    'zookeeper':{
+        'ip':'127.0.0.1',
+        'port':'2181'
+    }
+},
+'broker':{
+    'zookeeper':{
+        'ip':'127.0.0.1',
+        'port':'2181'
+    }
 },
 'global':{
    #Sur l'axe du temps écrire un label toutes les X mesures

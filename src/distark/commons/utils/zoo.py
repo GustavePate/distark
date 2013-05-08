@@ -4,8 +4,6 @@ import argparse
 import traceback
 
 from kazoo.client import KazooClient
-from distark.commons.utils.MyConfiguration import Configuration
-
 from kazoo.client import KazooState
 from kazoo.client import KeeperState
 
@@ -17,6 +15,12 @@ class ZooBorg(object):
     distark/client/conf
     distark/client/list/client_uniq_id (ephemeral?
     '''
+    CLIENT='client'
+    WORKER='worker'
+    BROKER='broker'
+    registred=[]
+    client_settings={}
+    client_initialized=False
     zk=KazooClient()
     ip=''
     port=''
@@ -27,24 +31,17 @@ class ZooBorg(object):
     def _my_listener(state):
         if state == KazooState.LOST:
             # Register somewhere that the session was lost
-            print 'Zookeeper session LOST'
+            print 'Zookeeper session listner: LOST'
         elif state == KazooState.SUSPENDED:
             # Handle being disconnected from Zookeeper
-            print 'Zookeeper session SUSPENDED'
+            print 'Zookeeper session listner: SUSPENDED'
         else:
-            print 'Zookeeper session (RE)CONNECTED'
+            print 'Zookeeper session listner: (RE)CONNECTED'
             # Handle being connected/reconnected to Zookeeper
 
-    def __init__(self):
-        # copie de l'état lors de l'initialisation d'une nouvelle instance
-        self.__dict__ = self.__shared_state
+    def initconn(self):
         if not(self.initialized):
-            self.ip=Configuration.get()['client']['zookeeper']['ip']
-            self.port=Configuration.get()['client']['zookeeper']['port']
             self.connect()
-            # Ensure a path, create if necessary
-            self.zk.ensure_path("/distark/client/conf")
-            self.initialized=True
 
             @self.zk.add_listener
             def watch_for_ro(state):
@@ -54,26 +51,50 @@ class ZooBorg(object):
                     else:
                         print("Read/Write mode!")
 
+    def __init__(self, ip, port):
+        # copie de l'état lors de l'initialisation d'une nouvelle instance
+        self.__dict__ = self.__shared_state
+        self.ip=ip
+        self.port=port
+        self.initconn()
+
     def connect(self):
         self.zk = KazooClient(hosts=''.join([self.ip, ':', self.port]))
+        print "ZOOKEEPER CONNECTED !!!"
         self.zk.start()
         self.zk.add_listener(self._my_listener)
+        self.initialized=True
 
     def close(self):
         print "zoo connection closed"
-        self.zk.stop()
-        self.zk.close()
+        #traceback.print_exc()
+        if (self.initialized):
+            self.unregisterall()
+            self.zk.stop()
+            self.zk.close()
+            self.initialized=False
 
-    def registerclient(self, client_id):
+    def unregisterall(self):
+        for path in self.registred:
+            if self.zk.exists(path):
+                self.zk.delete(path, recursive=True)
+
+    def register(self, itemtype, item_id, handler):
         '''
-        client_id must be a string
-        automagically update conf with zookeeper content
+        register the item in zookeeper /list/
+        itemtype must be a Zooborg constant
+        item_id must be a string
+        handler: method to call on conf change
         '''
         # Create a node with data
         #TODO: add system properties in data (ip, os)
         #TODO: add uniq client id
-        self.zk.ensure_path("/distark/client/list")
-        path=''.join(['/distark/client/list/', client_id])
+        if itemtype not in [ZooBorg.CLIENT, ZooBorg.WORKER, ZooBorg.BROKER]:
+            raise Exception('Zooborg.register: invalid type')
+        self.initconn()
+        self.zk.ensure_path("/distark/" + itemtype + "/list")
+        path=''.join(['/distark/' + itemtype + '/list/', item_id])
+        self.registred.append(path)
         data=b'ip̂,os'
         if not(self.zk.exists(path)):
             self.zk.create(path, data)
@@ -81,22 +102,31 @@ class ZooBorg(object):
             self.zk.delete(path, recursive=True)
             self.zk.create(path, data)
         #reload conf if change in zoo
-        self._setHandleOnClientConf(self._clientconfwatcher)
+        self.zk.DataWatch('/distark/' + itemtype + '/conf/conf_reload_trigger',
+                          handler)
 
-    def unregisterclient(self, client_id):
+    def unregister(self, itemtype, item_id):
         '''
-        client_id must be a string
+        deregister the item in zookeeper /list/
+        itemtype must be a Zooborg constant
+        item_id must be a string
         '''
-        self.zk.ensure_path("/distark/client/list")
-        path=''.join(['/distark/client/list/', client_id])
+        if itemtype not in [ZooBorg.CLIENT, ZooBorg.WORKER, ZooBorg.BROKER]:
+            raise Exception('Zooborg.unregister: invalid type')
+        self.initconn()
+        self.zk.ensure_path("/distark/" + itemtype + "/list")
+        path=''.join(['/distark/' + itemtype + '/list/', item_id])
         if self.zk.exists(path):
             self.zk.delete(path, recursive=True)
 
-    def getClientList(self):
-        return self.zk.get_children('/distark/client/list')
-
-    def _setHandleOnClientConf(self, callable):
-        self.zk.DataWatch('/distark/client/conf/conf_reload_trigger', callable)
+    def getList(self, listtype):
+        '''
+        listtype must be a Zooborg constant
+        '''
+        if listtype not in [ZooBorg.CLIENT, ZooBorg.WORKER, ZooBorg.BROKER]:
+            raise Exception('Zooborg.getList: invalid type')
+        self.initconn()
+        return self.zk.get_children('/distark/' + listtype + '/list')
 
     def _dumbdatawatcher(self, data, stat):
         print 'dumbwatcher'
@@ -107,26 +137,20 @@ class ZooBorg(object):
         print 'dumbwatcher'
         print 'children:', children
 
-    def _clientconfwatcher(self, data, stat):
-        self.getClientConf()
+    def getConf(self, conftype):
+        '''
+        conftype must be a Zooborg constant
+        '''
+        zooconf={}
+        if conftype not in [ZooBorg.CLIENT, ZooBorg.WORKER, ZooBorg.BROKER]:
+            raise Exception('Zooborg.getConf: invalid type')
 
-    def getClientConf(self):
-        '''
-        return dic
-        '''
-        print 'Load zookeeper client conf'
-        zooconf={'broker': {'connectionstr': None}}
-        zoopath='/distark/client/conf/broker/connectionstr'
-        zooconf['broker']['connectionstr'], stat = self.zk.get(zoopath)
-        Configuration.settings.update(zooconf)
-        print Configuration.settings
+        self.initconn()
+        if conftype in [ZooBorg.CLIENT, ZooBorg.WORKER]:
+            zooconf={'broker': {'connectionstr': None}}
+            zoopath='/distark/' + conftype + '/conf/broker/connectionstr'
+            zooconf['broker']['connectionstr'], stat = self.zk.get(zoopath)
         return zooconf
-
-    def getWorkerConf(self):
-        pass
-
-    def getBrokerConf(self):
-        pass
 
 
 def _initclientconf(zb):
@@ -142,9 +166,28 @@ def _initclientconf(zb):
     print "initclientconf: create distark/client/broker/connectionstr"
     zb.zk.ensure_path("/distark/client/conf/broker/connectionstr")
     print "initclientconf: set data distark/client/broker/connectionstr"
-    zb.zk.set("/distark/client/conf/broker/connectionstr", b"tcp://localhost:5555")
+    zb.zk.set("/distark/client/conf/broker/connectionstr",
+              b"tcp://localhost:5555")
     zb.zk.ensure_path("/distark/client/conf/conf_reload_trigger")
     print "initclientconf: create distark/client/conf/conf_reload_trigger"
+
+
+def _initworkerconf(zb):
+    print "initworkerconf"
+    zb=ZooBorg()
+    print "initworkerconf: delete worker root"
+    if zb.zk.exists("/distark/worker"):
+        zb.zk.delete("/distark/worker", recursive=True)
+    print "initworkerconf: create distark/worker/list"
+    zb.zk.ensure_path("/distark/worker/list")
+    print "initworkerconf: create distark/worker/conf"
+    zb.zk.ensure_path("/distark/worker/conf")
+    print "initworkerconf: create distark/worker/broker/connectionstr"
+    zb.zk.ensure_path("/distark/worker/conf/broker/connectionstr")
+    print "initworkerconf: set data distark/worker/broker/connectionstr"
+    zb.zk.set("/distark/worker/conf/broker/connectionstr",
+              b"tcp://localhost:5555")
+    zb.zk.ensure_path("/distark/worker/conf/conf_reload_trigger")
 
 if __name__ == '__main__':
     ##############################################
@@ -163,8 +206,10 @@ if __name__ == '__main__':
     try:
         if args.do == 'initclientconf':
             _initclientconf(zb)
-
+        if args.do == 'initworkerconf':
+            _initworkerconf(zb)
         elif args.do == 'initall':
+            _initworkerconf(zb)
             _initclientconf(zb)
         else:
             print 'do nothing !!!'

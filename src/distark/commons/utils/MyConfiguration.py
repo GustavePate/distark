@@ -15,29 +15,34 @@ class Configuration(object):
     initialized = False
     settings = {}
     ok = ''
+    client_settings = {}
+    client_initialized = False
+    worker_settings = {}
+    worker_initialized = False
 
     @staticmethod
     def _initconf(confpath=None):
         f = None
-        if confpath is not None:
-            try:
-                print "Configuration Loaded from:", confpath
-                f = open(confpath, 'r')
-                Configuration.settings = load(f, Loader=Loader)
-                Configuration.initialized = True
-            finally:
-                if f is not None:
-                    f.close()
-        else:
-            try:
-                confpath = Configuration.getConfigPath(__file__)
-                print "Configuration Loaded from:", confpath
-                f = open(confpath, 'r')
-                Configuration.settings = load(f, Loader=Loader)
-                Configuration.initialized = True
-            finally:
-                if f is not None:
-                    f.close()
+        if not(Configuration.initialized):
+            if confpath is not None:
+                try:
+                    print "Configuration Loaded from:", confpath
+                    f = open(confpath, 'r')
+                    Configuration.settings = load(f, Loader=Loader)
+                    Configuration.initialized = True
+                finally:
+                    if f is not None:
+                        f.close()
+            else:
+                try:
+                    confpath = Configuration.getConfigPath(__file__)
+                    print "Configuration Loaded from:", confpath
+                    f = open(confpath, 'r')
+                    Configuration.settings = load(f, Loader=Loader)
+                    Configuration.initialized = True
+                finally:
+                    if f is not None:
+                        f.close()
 
     def __init__(self, confpath=None):
         '''
@@ -48,10 +53,34 @@ class Configuration(object):
         self.initialized = True
 
     @staticmethod
-    def get():
-        if not Configuration.initialized:
+    def updateclient(zooconf):
+        Configuration.client_settings.update(zooconf)
+
+    @staticmethod
+    def getclient():
+        '''
+        return settings dictionnary
+        '''
+        if not Configuration.client_initialized:
             Configuration._initconf()
-        return Configuration.settings
+            Configuration.client_settings = Configuration.settings['client']
+            Configuration.client_initialized = True
+        return Configuration.client_settings
+
+    @staticmethod
+    def updateworker(zooconf):
+        Configuration.worker_settings.update(zooconf)
+
+    @staticmethod
+    def getworker():
+        '''
+        return settings dictionnary
+        '''
+        if not Configuration.worker_initialized:
+            Configuration._initconf()
+            Configuration.worker_settings = Configuration.settings['worker']
+            Configuration.worker_initialized = True
+        return Configuration.worker_settings
 
     @staticmethod
     def getInit():

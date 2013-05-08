@@ -71,7 +71,13 @@ class MajorDomoBroker(object):
     nb_client_request = 0
     _terminated=False
     verbose = False  # Print activity to stdout
+    _isup = False
 
+    def isup(self):
+        if not(self._terminated):
+            return self._isup
+        else:
+            return False
     # ---------------------------------------------------------------------
 
     def __init__(self, verbose=False):
@@ -86,7 +92,8 @@ class MajorDomoBroker(object):
         self.socket.linger = 0
         self.poller = zmq.Poller()
         self.poller.register(self.socket, zmq.POLLIN)
-        logging.basicConfig(format="%(asctime)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S",
+        logging.basicConfig(format="%(asctime)s %(message)s",
+                            datefmt="%Y-%m-%d %H:%M:%S",
                             level=logging.INFO)
 
     # ---------------------------------------------------------------------
@@ -99,6 +106,7 @@ class MajorDomoBroker(object):
         while True:
             try:
                 if not(self._terminated):
+                    self._isup = True
                     items = self.poller.poll(self.HEARTBEAT_INTERVAL)
                 else:
                     print "Quit broker sucessfully: terminated !"
