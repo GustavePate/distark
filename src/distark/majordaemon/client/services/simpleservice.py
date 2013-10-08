@@ -57,11 +57,10 @@ class SimpleService(Distarkcli):
     getReply renvoie la reponse si elle est arrivée
     '''
 
-    associated_pb_response=SIMPLE_RESPONSE
+    pbresptype=SIMPLE_RESPONSE
+    serviceName='SimpleService'
+    pbrespHandler=SimpleResponse
 
     def __init__(self, simplerequest):
         self.objreq=simplerequest
-        self.pbresptype=self.associated_pb_response
-        self.pbrespHandler=SimpleResponse
-        self.serviceName='SimpleService'
         self.send()

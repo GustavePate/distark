@@ -5,7 +5,7 @@ Created on 25 avr. 2013
 @author: guillaume
 '''
 from distark.commons.protos.generic_service_pb2 import ANOTHER_REQUEST
-from distark.commons.protos.generic_service_pb2 import ANOTHER_RESPONSE
+from generic_service_pb2 import ANOTHER_RESPONSE
 from distark.majordaemon.client.transport.distarkcli import Distarkcli
 
 
@@ -51,11 +51,10 @@ class AnotherService(Distarkcli):
     getReply renvoie la reponse si elle est arrivée
     '''
 
-    associated_pb_response=ANOTHER_RESPONSE
+    pbresptype=ANOTHER_RESPONSE
+    serviceName='AnotherService'
+    pbrespHandler=AnotherResponse
 
     def __init__(self, anotherrequest):
         self.objreq=anotherrequest
-        self.pbresptype=self.associated_pb_response
-        self.pbrespHandler=AnotherResponse
-        self.serviceName='AnotherService'
         self.send()

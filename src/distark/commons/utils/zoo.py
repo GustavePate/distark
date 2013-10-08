@@ -6,6 +6,7 @@ import traceback
 from kazoo.client import KazooClient
 from kazoo.client import KazooState
 from kazoo.client import KeeperState
+from distark.commons.utils.MyConfiguration import Configuration
 
 
 class ZooBorg(object):
@@ -97,10 +98,10 @@ class ZooBorg(object):
         self.registred.append(path)
         data=b'ip̂,os'
         if not(self.zk.exists(path)):
-            self.zk.create(path, data)
+            self.zk.create(path, data, None, True)
         else:
             self.zk.delete(path, recursive=True)
-            self.zk.create(path, data)
+            self.zk.create(path, data, None, True)
         #reload conf if change in zoo
         self.zk.DataWatch('/distark/' + itemtype + '/conf/conf_reload_trigger',
                           handler)
@@ -150,12 +151,17 @@ class ZooBorg(object):
             zooconf={'broker': {'connectionstr': None}}
             zoopath='/distark/' + conftype + '/conf/broker/connectionstr'
             zooconf['broker']['connectionstr'], stat = self.zk.get(zoopath)
+
+        if conftype in [ZooBorg.BROKER]:
+            zooconf={'bindstr': None}
+            zoopath='/distark/' + conftype + '/conf/bindstr'
+            zooconf['bindstr'], stat = self.zk.get(zoopath)
+
         return zooconf
 
 
 def _initclientconf(zb):
     print "initclientconf"
-    zb=ZooBorg()
     print "initclientconf: delete client root"
     if zb.zk.exists("/distark/client"):
         zb.zk.delete("/distark/client", recursive=True)
@@ -174,7 +180,6 @@ def _initclientconf(zb):
 
 def _initworkerconf(zb):
     print "initworkerconf"
-    zb=ZooBorg()
     print "initworkerconf: delete worker root"
     if zb.zk.exists("/distark/worker"):
         zb.zk.delete("/distark/worker", recursive=True)
@@ -189,6 +194,23 @@ def _initworkerconf(zb):
               b"tcp://localhost:5555")
     zb.zk.ensure_path("/distark/worker/conf/conf_reload_trigger")
 
+
+def _initbrokerconf(zb):
+    print "initbrokerconf"
+    print "initbrokerconf: delete broker root"
+    if zb.zk.exists("/distark/broker"):
+        zb.zk.delete("/distark/broker", recursive=True)
+    print "initbrokerconf: create distark/broker/list"
+    zb.zk.ensure_path("/distark/broker/list")
+    print "initbrokerconf: create distark/broker/conf"
+    zb.zk.ensure_path("/distark/broker/conf")
+    print "initbrokerconf: create distark/broker/bindstr"
+    zb.zk.ensure_path("/distark/broker/conf/bindstr")
+    print "initbrokerconf: set data distark/broker/bindstr"
+    zb.zk.set("/distark/broker/conf/bindstr",
+              b"tcp://*:5555")
+    zb.zk.ensure_path("/distark/broker/conf/conf_reload_trigger")
+
 if __name__ == '__main__':
     ##############################################
     #     ARGUMENTS PARSING
@@ -202,15 +224,20 @@ if __name__ == '__main__':
     print "Program Launched with args:" + str(args)
     print "Do:" + str(args.do)
     zb=None
-    zb=ZooBorg()
+    ip = Configuration.getclient()['zookeeper']['ip']
+    port = Configuration.getclient()['zookeeper']['port']
+    zb = ZooBorg(ip, port)
     try:
         if args.do == 'initclientconf':
             _initclientconf(zb)
-        if args.do == 'initworkerconf':
+        elif args.do == 'initworkerconf':
             _initworkerconf(zb)
+        elif args.do == 'initbrokerconf':
+            _initbrokerconf(zb)
         elif args.do == 'initall':
             _initworkerconf(zb)
             _initclientconf(zb)
+            _initbrokerconf(zb)
         else:
             print 'do nothing !!!'
 
@@ -218,5 +245,5 @@ if __name__ == '__main__':
         traceback.print_exc()
 
     finally:
-        zb.unregisterclient('test_client')
+        #zb.unregisterclient('test_client')
         zb.close()

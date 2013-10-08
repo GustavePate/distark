@@ -13,8 +13,9 @@ from distark.majordaemon.worker.mdwrkapi import MajorDomoWorker
 from distark.commons.utils.NetInfo import NetInfo
 from distark.commons.utils.MyConfiguration import Configuration
 from distark.commons.utils.zoo import ZooBorg
+from distark.commons.utils.db.mongopool import MongoPool
+from distark.commons.utils.uniq import Uniq
 from distark.majordaemon.commons.ZMQUtils import ZMQUtils
-
 from distark.commons.protos.generic_service_pb2 import PBOneRequest
 from distark.commons.protos.generic_service_pb2 import PBOneResponse
 
@@ -29,6 +30,9 @@ from distark.commons.protos.generic_service_pb2 import ANOTHER_REQUEST
 
 from distark.majordaemon.worker.processors.SimpleProcessor import simple_request_handler
 from distark.commons.protos.generic_service_pb2 import SIMPLE_REQUEST
+
+from distark.majordaemon.worker.processors.searchfoodprocessor import search_food_request_handler
+from distark.commons.protos.generic_service_pb2 import SEARCH_FOOD_REQUEST
 
 from distark.majordaemon.worker.utils import error_response
 
@@ -60,6 +64,7 @@ class Worker(object):
     existing_services = {
         SIMPLE_REQUEST: simple_request_handler,
         ANOTHER_REQUEST: another_request_handler,
+        SEARCH_FOOD_REQUEST: search_food_request_handler,
     }
 
     # IN: PBOneRequest
@@ -68,7 +73,8 @@ class Worker(object):
 
         # prepare response
         oresp = PBOneResponse()
-        print "handle:", PBRequestType.values_by_number[oreq.rtype].name
+        if self.verbose:
+            print "handle:", PBRequestType.values_by_number[oreq.rtype].name
 
         # if exists
         if oreq.rtype in self.existing_services.keys():
@@ -151,15 +157,23 @@ class Worker(object):
 
     def __init__(self, verbose=False):
         # TODO: add uniq id
-        self.uniqid = 'uniqid'
         self.verbose = verbose
+        uniq = Uniq()
+        self.uniqid = uniq.getid(uniq.WORKER)
+
+        #zookeeper connection
         zb = ZooBorg(Configuration.getworker()['zookeeper']['ip'],
                      Configuration.getworker()['zookeeper']['port'])
         addconf = zb.getConf(ZooBorg.WORKER)
         con_str = addconf['broker']['connectionstr']
-        # zb.register(ZooBorg.WORKER, self.uniqid, self.zoo_conf_changed)
-
+        zb.register(ZooBorg.WORKER, self.uniqid, self.zoo_conf_changed)
         self.worker = MajorDomoWorker(con_str, "echo", self.verbose)
+
+        #init mongodb pool
+        self.mp = MongoPool(Configuration.getworker()['mongo']['host'],
+                            Configuration.getworker()['mongo']['port'],
+                            Configuration.getworker()['mongo']['db'],
+                            Configuration.getworker()['mongo']['maxcon'])
 
 
 def main():

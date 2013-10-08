@@ -1,0 +1,17 @@
+import "objects/food.proto";
+
+enum PBSearchFoodErrors {
+    ERROR_NONE = 1;
+    ERROR_NO_RESULT = 2;   
+    ERROR_OTHER = 3;   
+}
+
+message PBSearchFoodRequest { 
+	required string request_food_str = 1;
+}
+
+message PBSearchFoodResponse {
+	repeated PBFood foods = 1;
+    required PBSearchFoodErrors func_error_code = 2;
+    optional string func_error_msg = 3;
+}

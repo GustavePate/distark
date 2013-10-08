@@ -42,8 +42,7 @@ class MajorDomoClient(object):
 
     def reconnect_to_broker(self):
         """Connect or reconnect to broker"""
-        print "CONNECT !"
-
+        #print "CONNECT !"
         if self.client:
             self.poller.unregister(self.client)
             self.client.close()

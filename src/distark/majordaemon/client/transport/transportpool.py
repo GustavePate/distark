@@ -13,6 +13,7 @@ from distark.majordaemon.commons.PBUtils import PBUtils
 from distark.majordaemon.client.transport.majordomoclient import MajorDomoClient
 from distark.commons.utils.MyConfiguration import Configuration
 from distark.commons.utils.zoo import ZooBorg
+from distark.commons.utils.uniq import Uniq
 
 
 class ConnectionPoolBorg():
@@ -22,20 +23,26 @@ class ConnectionPoolBorg():
     initialized=False
     __shared_state = {}  # variable de classe contenant l'état à partage
 
+    def _zconfchanged(self, data, stat):
+        #print "pool: conf changed !"
+        pass
+
     def __init__(self, maxconnection=10):
         # copie de l'état lors de l'initialisation d'une nouvelle instance
         self.__dict__ = self.__shared_state
         if not(self.initialized):
             #N MajorDomoClient
-            print "INIT ConnectionPool"
+            #print "INIT ConnectionPool"
             zb = ZooBorg(Configuration.getclient()['zookeeper']['ip'],
                          Configuration.getclient()['zookeeper']['port'])
             zooconf = zb.getConf(ZooBorg.CLIENT)
             connection_str=zooconf['broker']['connectionstr']
-            print connection_str
+            uniq = Uniq()
             for _ in range(1, maxconnection):
                 conn=MajorDomoClient(connection_str, False, self)
                 self.__availableconnection.append(conn)
+                #register connexion
+                zb.register(zb.CLIENT, uniq.getid(uniq.CLIENT), self._zconfchanged)
             self.initialized=True
 
     def getConnection(self):

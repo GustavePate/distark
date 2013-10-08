@@ -19,6 +19,8 @@ class Configuration(object):
     client_initialized = False
     worker_settings = {}
     worker_initialized = False
+    broker_settings = {}
+    broker_initialized = False
 
     @staticmethod
     def _initconf(confpath=None):
@@ -81,6 +83,21 @@ class Configuration(object):
             Configuration.worker_settings = Configuration.settings['worker']
             Configuration.worker_initialized = True
         return Configuration.worker_settings
+
+    @staticmethod
+    def updatebroker(zooconf):
+        Configuration.broker_settings.update(zooconf)
+
+    @staticmethod
+    def getbroker():
+        '''
+        return settings dictionnary
+        '''
+        if not Configuration.broker_initialized:
+            Configuration._initconf()
+            Configuration.broker_settings = Configuration.settings['broker']
+            Configuration.broker_initialized = True
+        return Configuration.broker_settings
 
     @staticmethod
     def getInit():

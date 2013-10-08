@@ -11,7 +11,8 @@ from time import sleep
 def i_will_execute_before_each_method():
     #possible to define before each test of the suite
     # in pytest.ini
-    print '\nhello i m here'
+    #print '\nhello i m here'
+    pass
 
 
 @pytest.mark.usefixtures("i_will_execute_before_each_method")
@@ -25,7 +26,7 @@ class TestTemplate(object):
     #TMPDIRµ***************************************
     #create a tmpdir
     def test_needatmpdir(self, tmpdir):
-        print tmpdir
+        #print tmpdir
         assert os.path.exists(str(tmpdir))
 
     #TESTING EXCEPTIONµ***************************************
@@ -54,12 +55,13 @@ class TestTemplate(object):
     # scope="function"
     @pytest.fixture(scope="module")
     def un_truc(self, request):
-        print 'un truc'
+        #print 'un truc'
         TestTemplate.class_variable=''.join(
             ['truc', TestTemplate.class_variable])
 
         def run_only_at_module_end():
-            print "\nfinalizing un truc"
+            #print "\nfinalizing un truc"
+            pass
         request.addfinalizer(run_only_at_module_end)
         return TestTemplate.class_variable
 
@@ -77,7 +79,7 @@ class TestTemplate(object):
 
     #will be called twice because fixture parameters
     def test_parameter(self, fixparam):
-        print fixparam
+        #print fixparam
         assert fixparam in ['un', 'deux']
 
     #MONKEYPATCHINGµ***************************************

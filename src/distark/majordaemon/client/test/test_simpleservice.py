@@ -17,7 +17,7 @@ class TestSimpleService(object):
         ss = SimpleService(request)
         # blocking call
         response = ss.getResponse()
-        if response[0] == ss.associated_pb_response:
+        if response[0] == ss.pbresptype:
             assert response[1].getBoum() == ''.join(reversed(txtreq))
         else:
             assert 0

@@ -19,6 +19,9 @@ import zmq
 from distark.majordaemon.commons import MDP
 from distark.majordaemon.commons.zhelpers import dump
 from distark.majordaemon.commons.Metrics import Metrics
+from distark.commons.utils.zoo import ZooBorg
+from distark.commons.utils.MyConfiguration import Configuration
+from distark.commons.utils.uniq import Uniq
 
 
 class Service(object):
@@ -72,6 +75,7 @@ class MajorDomoBroker(object):
     _terminated=False
     verbose = False  # Print activity to stdout
     _isup = False
+    _uniqid=''
 
     def isup(self):
         if not(self._terminated):
@@ -79,6 +83,9 @@ class MajorDomoBroker(object):
         else:
             return False
     # ---------------------------------------------------------------------
+
+    def zoo_conf_changed(self, data, stat):
+        print "broker conf changed"
 
     def __init__(self, verbose=False):
         """Initialize broker state."""
@@ -95,6 +102,15 @@ class MajorDomoBroker(object):
         logging.basicConfig(format="%(asctime)s %(message)s",
                             datefmt="%Y-%m-%d %H:%M:%S",
                             level=logging.INFO)
+        uniq = Uniq()
+        self._uniqid = uniq.getid(uniq.BROKER)
+        zb = ZooBorg(Configuration.getbroker()['zookeeper']['ip'],
+                     Configuration.getbroker()['zookeeper']['port'])
+        addconf = zb.getConf(ZooBorg.BROKER)
+        con_str = addconf['bindstr']
+        zb.register(ZooBorg.BROKER, self._uniqid, self.zoo_conf_changed)
+        #self.bind("tcp://*:5555")
+        self.bind(con_str)
 
     # ---------------------------------------------------------------------
     def stop(self):
@@ -252,7 +268,8 @@ class MajorDomoBroker(object):
             returncode = "200" if name in self.services else "404"
         msg[-1] = returncode
 
-        # insert the protocol header and service name after the routing envelope ([client, ''])
+        # insert the protocol header and service name
+        # after the routing envelope ([client, ''])
         msg = msg[:2] + [MDP.C_CLIENT, service] + msg[2:]
         self.socket.send_multipart(msg)
 
@@ -267,7 +284,8 @@ class MajorDomoBroker(object):
     def purge_workers(self):
         """Look for & kill expired workers.
 
-        Workers are oldest to most recent, so we stop at the first alive worker.
+        Workers are oldest to most recent,
+        so we stop at the first alive worker.
         """
         while self.waiting:
             w = self.waiting[0]
@@ -326,7 +344,6 @@ class MajorDomoBroker(object):
 def main(verbose=False):
     """create and staùrt new broker"""
     broker = MajorDomoBroker(verbose)
-    broker.bind("tcp://*:5555")
     return broker
 
 if __name__ == '__main__':

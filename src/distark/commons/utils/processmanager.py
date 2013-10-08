@@ -14,7 +14,7 @@ class ProcessManager(object):
         pidlist = []
         for pid in proc.stdout:
             pidlist.append(pid)
-            print "licencetokill:", pid
+            #print "licencetokill:", pid
             os.kill(int(pid), signal.SIGINT)
             # Check if the process that we killed is alive.
             if ProcessManager.pidexists([pid]):
@@ -42,7 +42,7 @@ class ProcessManager(object):
 
         proc = subprocess.Popen(["pgrep", processnameregex], stdout=subprocess.PIPE)
         for pid in proc.stdout:
-            print "exists:", pid
+            #print "exists:", pid
             res = True
         return res
 

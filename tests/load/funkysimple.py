@@ -3,6 +3,7 @@ import py
 from random import randrange
 from distark.majordaemon.client.test.test_anotherservice import TestAnotherService
 from distark.majordaemon.client.test.test_simpleservice import TestSimpleService
+from distark.majordaemon.client.test.test_searchfoodservice import TestSearchFoodService
 from distark.majordaemon.infralauncher import InfraLauncher
 from funkload.FunkLoadTestCase import FunkLoadTestCase
 
@@ -51,15 +52,20 @@ class FunkySimple(FunkLoadTestCase):
         self.another_inc=0
         simple=TestSimpleService()
         self.simple_inc=0
+        searchfood = TestSearchFoodService()
+        self.searchfood_inc = 0
         for i in range(nb_time):
             coin=randrange(1, 100)
-            if coin<=50:
+            if coin<=30:
                 another.callanotherservice()
                 self.another_inc = self.another_inc + 1
-            else:
-                #self.callanotherservice()
+            elif coin <= 60:
                 simple.callsimpleservice()
                 self.simple_inc = self.simple_inc + 1
+            else:
+                searchfood.callsearchfoodservice()
+                self.searchfood_inc += 1
+
             # self.get(server_url, description='Get url')
         # end
         # of

@@ -14,7 +14,6 @@ class TestAnotherService(object):
 
     @py.test.mark.fullstack
     def test_anotherservice(self):
-
             self.callanotherservice()
 
     def callanotherservice(self, txtreq='anotherworld'):
@@ -25,7 +24,7 @@ class TestAnotherService(object):
         # blocking call
         response = ss.getResponse()
 
-        if response[0] == ss.associated_pb_response:
+        if response[0] == ss.pbresptype:
             assert response[1].getResponseStr() == ''.join([txtreq, txtreq])
         else:
             # fail

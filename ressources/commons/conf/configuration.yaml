@@ -8,6 +8,12 @@
     }
 },
 'worker':{
+    'mongo':{
+        'host':'127.0.0.1',
+        'port':27017,
+        'db':'distark',
+        'maxcon':10
+    },
     'zookeeper':{
         'ip':'127.0.0.1',
         'port':'2181'
