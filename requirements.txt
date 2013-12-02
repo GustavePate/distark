@@ -8,3 +8,4 @@ pyzmq
 pytest
 pyramid
 pdfminer
+pymongo

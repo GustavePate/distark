@@ -20,10 +20,10 @@ protoc:
 	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/generic_service.proto
 	
 startbroker:
-	echo "TODO"
+	python -m distark.majordaemon.broker.mdbroker
 
 startworker:
-	echo "TODO"
+	python -m distark.majordaemon.worker.test
 
 startclient:
 	echo "TODO"
