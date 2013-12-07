@@ -4,4 +4,3 @@ pytest-cov
 funkload
 yolk
 jedi
-pdfminer

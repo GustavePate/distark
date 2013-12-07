@@ -6,6 +6,5 @@ protobuf
 python-dateutil
 pyzmq
 pytest
-pyramid
-pdfminer
 pymongo
+beautifullsoup4

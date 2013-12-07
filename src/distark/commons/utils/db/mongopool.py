@@ -7,7 +7,7 @@ from pymongo import MongoClient
 
 class MongoPool(object):
 
-    initialized=False
+    initialized = False
     __availableconnection = []
     __busyconnection = []
     __shared_state = {}  # variable de classe contenant l'état à partage
@@ -17,7 +17,7 @@ class MongoPool(object):
         # copie de l'état lors de l'initialisation d'une nouvelle instance
         self.__dict__ = self.__shared_state
         if not(self.initialized):
-            if (host=='' or port == '' or db == ''):
+            if (host == '' or port == '' or db == ''):
                 # raise exception
                 raise Exception('MongoPool init error: missing host or port')
             else:
@@ -35,12 +35,25 @@ class MongoPool(object):
 
     def getConnection(self):
         #print self
-        if len(self.__availableconnection)>0:
-            conn=self.__availableconnection.pop()
+        if len(self.__availableconnection) > 0:
+            conn = self.__availableconnection.pop()
             self.__busyconnection.append(conn)
             return conn
         else:
             raise Exception('MongoPool: No more connection available')
+
+    def insert(self, table, data):
+        con = self.getConnection()
+        table = eval("con."+table)
+        table.insert(data)
+        self.returnToPool(con)
+
+    def find(self, table, query):
+        con = self.getConnection()
+        table = eval("con."+table)
+        qryres = table.find(query)
+        self.returnToPool(con)
+        return qryres
 
     def returnToPool(self, conn):
         #print self

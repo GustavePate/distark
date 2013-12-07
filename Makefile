@@ -4,7 +4,7 @@ NAME=`python setup.py --name`
 VERSION=`python setup.py --version`
 SDIST=dist/$(NAME)-$(VERSION).tar.gz
 VENV=/tmp/venv
-ZOO=/opt/zookeeper-3.4.5
+ZOO=/home/opt/zookeeper-3.4.5
 
 
 ##############################
@@ -18,12 +18,12 @@ protoc:
 	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/objects/*
 	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/services/*
 	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/generic_service.proto
-	
+
 startbroker:
-	python -m distark.majordaemon.broker.mdbroker
+	$(PYTHON) -m distark.majordaemon.broker.mdbroker
 
 startworker:
-	python -m distark.majordaemon.worker.test
+	$(PYTHON) -m distark.majordaemon.worker.mdworker
 
 startclient:
 	echo "TODO"
@@ -32,7 +32,7 @@ zoo:
 	$(ZOO)/bin/zkServer.sh restart
 
 zools:
-	$(ZOO)/bin/zkCli.sh -server localhost:2181
+	$(ZOO)/bin/zkCli.sh -server localhost:2180
 
 test.travis:
 	py.test --maxfail=5 --showlocals --duration=2 -v -m "not slow and not fullstack"
@@ -56,11 +56,14 @@ loadtest:
 loadtest.real:
 	fl-run-test -dv tests/load/funkysimple.py
 
-test:
+testall:
 	py.test --maxfail=1 --showlocals  --duration=3 -v --clearcache  -s 
 
+test:
+	py.test --maxfail=1 --showlocals  --duration=3 -v  -s 
+
 clean:
-	find . -type f -name "FILE-TO-FIND" -exec rm -f {} \;
+	#find . -type f -name "FILE-TO-FIND" -exec rm -f {} \;
 	find . -type f -name "*.pyc" -exec rm -f {} \;
 
 ##############################

@@ -4,25 +4,25 @@
 'client':{
     'zookeeper':{
         'ip':'127.0.0.1',
-        'port':'2181'
+        'port':'2180'
     }
 },
 'worker':{
     'mongo':{
         'host':'127.0.0.1',
-        'port':27017,
-        'db':'distark',
+        'port':27018,
+        'db':'hp',
         'maxcon':10
     },
     'zookeeper':{
         'ip':'127.0.0.1',
-        'port':'2181'
+        'port':'2180'
     }
 },
 'broker':{
     'zookeeper':{
         'ip':'127.0.0.1',
-        'port':'2181'
+        'port':'2180'
     }
 },
 'global':{

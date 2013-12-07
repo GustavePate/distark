@@ -9,7 +9,7 @@ class TestSearchFoodService(object):
 
     @py.test.mark.fullstack
     def test_searchfoodservice(self):
-        self.callsearchfoodservice()
+        self.callsearchfoodservice("ananas")
 
     def callsearchfoodservice(self, txtreq="unkown"):
         request = SearchFoodRequest()

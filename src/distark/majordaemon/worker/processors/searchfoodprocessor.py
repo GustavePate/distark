@@ -7,6 +7,9 @@ Created on 24 avr. 2013
 
 from distark.commons.protos.services.search_food_service_pb2 import PBSearchFoodRequest
 from distark.commons.protos.services.search_food_service_pb2 import PBSearchFoodResponse
+from distark.commons.protos.services.search_food_service_pb2 import ERROR_NONE as PBSFOOD_ERROR_NONE
+from distark.commons.protos.services.search_food_service_pb2 import ERROR_NO_RESULT as PBSFOOD_ERROR_NO_RESULT
+from distark.commons.protos.services.search_food_service_pb2 import ERROR_OTHER as PBSFOOD_ERROR_OTHER
 from distark.commons.protos.generic_service_pb2 import SEARCH_FOOD_RESPONSE
 from distark.commons.protos.generic_service_pb2 import PBOneResponse
 from distark.commons.protos.generic_service_pb2 import ERROR_NONE
@@ -34,32 +37,40 @@ class SearchFoodProcessor(object):
         self.req = req
 
     def process(self, pbsearchfoodresp):
-        mp = MongoPool()
-        con = mp.getConnection()
-        qryres = con.alim.find({'name':
-                                {'$regex': '.*' + self.req.request_food_str
-                                 + '.*',
-                                 '$options': 'i'}
-                                })
-        nbres = qryres.count()
-        if nbres > self.MAX_RESULTS:
-            #add a warning in response
-            pass
+        try:
+            mp = MongoPool()
+            print "REQ:" + str(self.req.request_food_str)
+            qryres = mp.find("food.fooddb",{'name_fr':
+                                        {'$regex': '.*' + self.req.request_food_str
+                                        + '.*',
+                                        '$options': 'i'}
+                                        })
+            nbres = qryres.count()
+            print "NBRES:" + str(nbres)
+            if nbres > self.MAX_RESULTS:
+                #add a warning in response
+                pass
 
-        if qryres.count() > 0:
-            #build response of at more MAX_RESULT rec
-            cpt = 1
-            for r in qryres:
-                #add rec to pbresponse
-                f=Food(mongo=r)
-                f.fillInPbSearchFood(pbsearchfoodresp)
-                if cpt >= self.MAX_RESULTS:
-                    break
-                cpt+=1
-        else:
-            #return functional error ERROR_NO_RESULT
-            #TODO: hashmap in protoc ?
-            pass
+            if qryres.count() > 0:
+                #build response of at more MAX_RESULT rec
+                cpt = 1
+                for r in qryres:
+                    #add rec to pbresponse
+                    f = Food(mongodata=r)
+                    f.fillInPbSearchFoodResponse(pbsearchfoodresp)
+                    if cpt >= self.MAX_RESULTS:
+                        break
+                    cpt += 1
+                pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_NONE
+            else:
+                #return functional error ERROR_NO_RESULT
+                #TODO: hashmap in protoc ?
+                pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_NO_RESULT
+        except Exception, err:
+            print traceback.format_exc()
+            pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_OTHER
+            raise Exception
+
 
 
 # IN: PBOneRequest
@@ -70,8 +81,8 @@ def search_food_request_handler(oreq):
         pbrealreq = oreq.searchfoodreq
         processor = SearchFoodProcessor(pbrealreq)
 
-        oresp.rtype = SEARCH_FOOD_RESPONSE
         oresp.etype = ERROR_NONE
+        oresp.rtype = SEARCH_FOOD_RESPONSE
         # a partir de la si il y a une erreur elle est fonctionnelle
         processor.process(oresp.searchfoodresp)
 
