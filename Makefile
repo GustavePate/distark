@@ -40,7 +40,9 @@ zools:
 	$(ZOO)/bin/zkCli.sh -server localhost:2180
 
 test.travis:
+	echo '###################################'
 	echo ${PYTHONPATH}
+	echo '###################################'
 	py.test --maxfail=5 --showlocals --duration=2 -v -m "not slow and not fullstack"
 
 test.qa:
