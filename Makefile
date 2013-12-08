@@ -8,6 +8,10 @@ ZOO=/home/opt/zookeeper-3.4.5
 PROTOPATH=./ressources/commons/protos/
 FRONTPROTOPATH=../pyramidfront/pyfront/protoc/
 
+PROTOC_PY_PATH=${PWD}/src/distark/commons/protos/
+PYTHONPATH := ${PYTHONPATH}:${PROTOC_PY_PATH}
+
+
 ##############################
 #  my targets
 ##############################
@@ -36,6 +40,7 @@ zools:
 	$(ZOO)/bin/zkCli.sh -server localhost:2180
 
 test.travis:
+	echo ${PYTHONPATH}
 	py.test --maxfail=5 --showlocals --duration=2 -v -m "not slow and not fullstack"
 
 test.qa:
