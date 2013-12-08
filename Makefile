@@ -11,7 +11,6 @@ FRONTPROTOPATH=../pyramidfront/pyfront/protoc/
 PROTOC_PY_PATH=${PWD}/src/distark/commons/protos/
 PYTHONPATH := ${PYTHONPATH}:$(PROTOC_PY_PATH)
 
-
 ##############################
 #  my targets
 ##############################
