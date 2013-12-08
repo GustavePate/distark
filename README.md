@@ -3,6 +3,7 @@ distark
 
 bits and pieces of a scalable architecture
 
+[![Build Status](https://travis-ci.org/GustavePate/distark.png?branch=master)](https://travis-ci.org/GustavePate/distark)
 
 TODO:
 
