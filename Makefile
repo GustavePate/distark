@@ -8,6 +8,7 @@ ZOO=/home/opt/zookeeper-3.4.5
 PROTOPATH=./ressources/commons/protos/
 FRONTPROTOPATH=../pyramidfront/pyfront/protoc/
 
+#PYTHON PATH MODIFICATION SHALL BE COPIED TO TRAVIS.YML !!! 
 PROTOC_PY_PATH=${PWD}/src/distark/commons/protos/
 PYTHONPATH := ${PYTHONPATH}:$(PROTOC_PY_PATH)
 
@@ -39,10 +40,6 @@ zools:
 	$(ZOO)/bin/zkCli.sh -server localhost:2180
 
 test.travis:
-	echo '###################################'
-	echo $(PYTHONPATH)
-	ls $(PROTOC_PY_PATH)
-	echo '###################################'
 	py.test --maxfail=5 --showlocals --duration=2 -v -m "not slow and not fullstack"
 
 test.qa:
