@@ -9,7 +9,7 @@ PROTOPATH=./ressources/commons/protos/
 FRONTPROTOPATH=../pyramidfront/pyfront/protoc/
 
 PROTOC_PY_PATH=${PWD}/src/distark/commons/protos/
-PYTHONPATH := ${PYTHONPATH}:${PROTOC_PY_PATH}
+PYTHONPATH := ${PYTHONPATH}:$(PROTOC_PY_PATH)
 
 
 ##############################
@@ -41,7 +41,8 @@ zools:
 
 test.travis:
 	echo '###################################'
-	echo ${PYTHONPATH}
+	echo $(PYTHONPATH)
+	ls $(PROTOC_PY_PATH)
 	echo '###################################'
 	py.test --maxfail=5 --showlocals --duration=2 -v -m "not slow and not fullstack"
 
