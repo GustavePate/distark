@@ -5,7 +5,8 @@ VERSION=`python setup.py --version`
 SDIST=dist/$(NAME)-$(VERSION).tar.gz
 VENV=/tmp/venv
 ZOO=/home/opt/zookeeper-3.4.5
-
+PROTOPATH=./ressources/commons/protos/
+FRONTPROTOPATH=../pyramidfront/pyfront/protoc/
 
 ##############################
 #  my targets
@@ -15,9 +16,9 @@ indent:
 	$(PYTHON) -m reindent --nobackup *.py
 	
 protoc:
-	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/objects/*
-	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/services/*
-	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=./ressources/commons/protos/ ./ressources/commons/protos/generic_service.proto
+	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=$(PROTOPATH) ./ressources/commons/protos/objects/*
+	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=$(PROTOPATH) ./ressources/commons/protos/services/*
+	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=$(PROTOPATH) ./ressources/commons/protos/generic_service.proto
 
 startbroker:
 	$(PYTHON) -m distark.majordaemon.broker.mdbroker
@@ -62,6 +63,8 @@ testall:
 test:
 	py.test --maxfail=1 --showlocals  --duration=3 -v  -s 
 
+publish:
+	cp -r $(PROTOPATH)/* $(FRONTPROTOPATH)
 clean:
 	#find . -type f -name "FILE-TO-FIND" -exec rm -f {} \;
 	find . -type f -name "*.pyc" -exec rm -f {} \;

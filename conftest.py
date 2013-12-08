@@ -1,4 +1,3 @@
-from distark.majordaemon.infralauncher import InfraLauncher
 import pytest
 import py
 
@@ -6,6 +5,8 @@ import py
 @py.test.mark.fullstack
 @pytest.fixture(scope="session")
 def infraup(request):
+
+    from distark.majordaemon.infralauncher import InfraLauncher
 
     def run_only_at_session_end():
         print "\nfinalizing session"
