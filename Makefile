@@ -6,7 +6,7 @@ SDIST=dist/$(NAME)-$(VERSION).tar.gz
 VENV=/tmp/venv
 ZOO=/home/opt/zookeeper-3.4.5
 PROTOPATH=./ressources/commons/protos/
-FRONTPROTOPATH=../pyramidfront/pyfront/protoc/
+FRONTPROTOPATH=../front/env/pyramidfront/pyramidfront/ressources/commons/protos/
 
 #PYTHON PATH MODIFICATION SHALL BE COPIED TO TRAVIS.YML !!! 
 PROTOC_PY_PATH=${PWD}/src/distark/commons/protos/
