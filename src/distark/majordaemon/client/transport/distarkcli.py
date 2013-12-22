@@ -8,7 +8,6 @@ from distark.commons.protos.generic_service_pb2 import PBOneRequest
 from distark.commons.protos.generic_service_pb2 import PBOneResponse
 from distark.commons.utils.NetInfo import NetInfo
 from distark.majordaemon.client.transport.transportpool import ConnectionPoolBorg
-from time import sleep
 
 
 class Distarkcli(object):

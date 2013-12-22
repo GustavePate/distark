@@ -66,11 +66,10 @@ class SearchFoodProcessor(object):
                 #return functional error ERROR_NO_RESULT
                 #TODO: hashmap in protoc ?
                 pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_NO_RESULT
-        except Exception, err:
+        except Exception:
             print traceback.format_exc()
             pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_OTHER
             raise Exception
-
 
 
 # IN: PBOneRequest
