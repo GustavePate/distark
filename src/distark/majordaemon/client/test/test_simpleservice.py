@@ -1,5 +1,5 @@
-from distark.majordaemon.client.services.simpleservice import SimpleService
-from distark.majordaemon.client.services.simpleservice import SimpleRequest
+from distarkcli.services.simpleservice import SimpleService
+from distarkcli.services.simpleservice import SimpleRequest
 import py
 import pytest
 

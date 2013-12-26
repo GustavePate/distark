@@ -1,0 +1,33 @@
+
+#use spaces not tab !
+{ 
+'client':{
+    'zookeeper':{
+        'ip':'127.0.0.1',
+        'port':'2180'
+    }
+},
+'worker':{
+    'mongo':{
+        'host':'127.0.0.1',
+        'port':27018,
+        'db':'hp',
+        'maxcon':10
+    },
+    'zookeeper':{
+        'ip':'127.0.0.1',
+        'port':'2180'
+    }
+},
+'broker':{
+    'zookeeper':{
+        'ip':'127.0.0.1',
+        'port':'2180'
+    }
+},
+'global':{
+   #Sur l'axe du temps écrire un label toutes les X mesures
+   'XLABELFREQUENCY':900
+
+}  
+}

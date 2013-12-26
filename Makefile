@@ -8,9 +8,14 @@ ZOO=/home/opt/zookeeper-3.4.5
 PROTOPATH=./ressources/commons/protos/
 FRONTPROTOPATH=../front/env/pyramidfront/pyramidfront/ressources/commons/protos/
 
+
 #PYTHON PATH MODIFICATION SHALL BE COPIED TO TRAVIS.YML !!! 
+PROJECT_PACKAGE_PATH=${PWD}/src/distark/
+PYTHONPATH := ${PYTHONPATH}:$(PROJECT_PACKAGE_PATH)
+
 PROTOC_PY_PATH=${PWD}/src/distark/commons/protos/
 PYTHONPATH := ${PYTHONPATH}:$(PROTOC_PY_PATH)
+
 
 ##############################
 #  my targets
@@ -25,13 +30,17 @@ protoc:
 	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=$(PROTOPATH) ./ressources/commons/protos/generic_service.proto
 
 startbroker:
-	$(PYTHON) -m distark.majordaemon.broker.mdbroker
+	echo ${PYTHONPATH}
+	$(PYTHON) -m distark.majordaemon.broker.mdbroker -c $(PWD)/ressources/conf/configuration.yaml -v
 
 startworker:
-	$(PYTHON) -m distark.majordaemon.worker.mdworker
+	$(PYTHON) -m distark.majordaemon.worker.mdworker -c $(PWD)/ressources/conf/configuration.yaml -v
 
 startclient:
 	echo "TODO"
+
+infraup:
+	${PWD}/bin/infralauncher.sh
 
 zoo:
 	$(ZOO)/bin/zkServer.sh restart
@@ -65,7 +74,7 @@ testall:
 	py.test --maxfail=1 --showlocals  --duration=3 -v --clearcache  -s 
 
 test:
-	py.test --maxfail=1 --showlocals  --duration=3 -v  -s 
+	py.test --maxfail=1 --showlocals  --duration=3 -v  -s --confpath=${PWD}/ressources/conf/configuration.yaml 
 
 publish:
 	cp -r $(PROTOPATH)/* $(FRONTPROTOPATH)

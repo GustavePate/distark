@@ -5,12 +5,12 @@ Created on 24 avr. 2013
 @author: guillaume
 '''
 
-from distark.commons.protos.services.another_service_pb2 import PBAnotherRequest
-from distark.commons.protos.services.another_service_pb2 import PBAnotherResponse
-from distark.commons.protos.generic_service_pb2 import ANOTHER_RESPONSE
-from distark.commons.protos.generic_service_pb2 import PBOneResponse
-from distark.commons.protos.generic_service_pb2 import ERROR_NONE
-from distark.commons.protos.generic_service_pb2 import ERROR_REQUEST_HANDLER
+from distarkcli.protos.services.another_service_pb2 import PBAnotherRequest
+from distarkcli.protos.services.another_service_pb2 import PBAnotherResponse
+from distarkcli.protos.generic_service_pb2 import ANOTHER_RESPONSE
+from distarkcli.protos.generic_service_pb2 import PBOneResponse
+from distarkcli.protos.generic_service_pb2 import ERROR_NONE
+from distarkcli.protos.generic_service_pb2 import ERROR_REQUEST_HANDLER
 from distark.majordaemon.worker.utils import error_response
 import traceback
 

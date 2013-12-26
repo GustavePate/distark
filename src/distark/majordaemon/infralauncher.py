@@ -3,15 +3,18 @@ import threading
 from time import sleep
 from distark.majordaemon.broker.mdbroker import main as bmain
 from distark.majordaemon.worker.mdworker import main as wmain
+from distarkcli.utils.MyConfiguration import Configuration
 
 
 class WorkerThread(threading.Thread):
     _worker = None
     _lock = None
+    _confpath = None
 
-    def __init__(self, lock):
+    def __init__(self, lock, confpath):
         threading.Thread.__init__(self)
         self._lock = lock
+        self._confpath = confpath
 
     def stop(self):
         if self._worker:
@@ -25,7 +28,7 @@ class WorkerThread(threading.Thread):
 
     def run(self):
         self._lock.acquire()
-        self._worker = wmain()
+        self._worker = wmain(self._confpath)
         self._lock.release()
         self._worker.work()
 
@@ -33,10 +36,12 @@ class WorkerThread(threading.Thread):
 class BrokerThread(threading.Thread):
     _broker = None
     _lock = None
+    _confpath = None
 
-    def __init__(self, lock):
+    def __init__(self, lock, confpath):
         threading.Thread.__init__(self)
         self._lock = lock
+        self._confpath = confpath
 
     def stop(self):
         if self._broker:
@@ -51,7 +56,7 @@ class BrokerThread(threading.Thread):
 
     def run(self):
         self._lock.acquire()
-        self._broker = bmain()
+        self._broker = bmain(self._confpath)
         self._lock.release()
         self._broker.mediate()  # run forever
 
@@ -99,14 +104,19 @@ class InfraLauncher(object):
             assert 0, 'worker not started'
 
     @staticmethod
-    def launch(nbworker):
+    def launch(confpath, nbworker):
+
+        print '###################################'
+        print confpath
+        print '###################################'
+
         if len(InfraLauncher.brokerlist) == 0:
             lock = threading.Lock()
             # launch broker
-            InfraLauncher.brokerlist.append(BrokerThread(lock))
+            InfraLauncher.brokerlist.append(BrokerThread(lock, confpath))
             for _ in range(nbworker):
                 # launch worker
-                InfraLauncher.workerlist.append(WorkerThread(lock))
+                InfraLauncher.workerlist.append(WorkerThread(lock, confpath))
 
             for b in InfraLauncher.brokerlist:
                 b.start()

@@ -8,6 +8,8 @@ import re
 from distark.commons.utils.db.mongopool import MongoPool
 from distark.commons.utils.MyConfiguration import Configuration
 
+
+#TODO: pass the configuration by command line
 MAX_CONN = 1
 host = Configuration.getworker()['mongo']['host']
 port = Configuration.getworker()['mongo']['port']

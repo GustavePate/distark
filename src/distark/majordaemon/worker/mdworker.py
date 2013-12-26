@@ -9,30 +9,33 @@ Author: Min RK <benjaminrk@gmail.com>
 
 import datetime
 import traceback
-from distark.majordaemon.worker.mdwrkapi import MajorDomoWorker
-from distark.commons.utils.NetInfo import NetInfo
-from distark.commons.utils.MyConfiguration import Configuration
-from distark.commons.utils.zoo import ZooBorg
-from distark.commons.utils.db.mongopool import MongoPool
-from distark.commons.utils.uniq import Uniq
-from distark.majordaemon.commons.ZMQUtils import ZMQUtils
-from distark.commons.protos.generic_service_pb2 import PBOneRequest
-from distark.commons.protos.generic_service_pb2 import PBOneResponse
+import argparse
 
-from distark.commons.protos.generic_service_pb2 import ERROR_UNKNOWN_SERVICE
-from distark.commons.protos.generic_service_pb2 import ERROR_PARSING_EXCEPTION
-from distark.commons.protos.generic_service_pb2 import ERROR_INVALID_ENVELOP
-from distark.commons.protos.generic_service_pb2 import _PBREQUESTTYPE as PBRequestType
+from distark.majordaemon.worker.mdwrkapi import MajorDomoWorker
+from distarkcli.utils.NetInfo import NetInfo
+from distarkcli.utils.MyConfiguration import Configuration
+from distarkcli.utils.zoo import ZooBorg
+from distark.majordaemon.worker.db.mongopool import MongoPool
+from distarkcli.utils.uniq import Uniq
+from distark.majordaemon.commons.ZMQUtils import ZMQUtils
+
+from distarkcli.protos.generic_service_pb2 import PBOneRequest
+from distarkcli.protos.generic_service_pb2 import PBOneResponse
+
+from distarkcli.protos.generic_service_pb2 import ERROR_UNKNOWN_SERVICE
+from distarkcli.protos.generic_service_pb2 import ERROR_PARSING_EXCEPTION
+from distarkcli.protos.generic_service_pb2 import ERROR_INVALID_ENVELOP
+from distarkcli.protos.generic_service_pb2 import _PBREQUESTTYPE as PBRequestType
 
 
 from distark.majordaemon.worker.processors.anotherprocessor import another_request_handler
-from distark.commons.protos.generic_service_pb2 import ANOTHER_REQUEST
+from distarkcli.protos.generic_service_pb2 import ANOTHER_REQUEST
 
 from distark.majordaemon.worker.processors.SimpleProcessor import simple_request_handler
-from distark.commons.protos.generic_service_pb2 import SIMPLE_REQUEST
+from distarkcli.protos.generic_service_pb2 import SIMPLE_REQUEST
 
 from distark.majordaemon.worker.processors.searchfoodprocessor import search_food_request_handler
-from distark.commons.protos.generic_service_pb2 import SEARCH_FOOD_REQUEST
+from distarkcli.protos.generic_service_pb2 import SEARCH_FOOD_REQUEST
 
 from distark.majordaemon.worker.utils import error_response
 
@@ -126,7 +129,7 @@ class Worker(object):
                     print 'raw_reply:', res
                 return [res]
 
-    def work(self):
+    def work(self, verbose=False):
         reply = None
         while True:
             if not(self._terminated):
@@ -176,10 +179,28 @@ class Worker(object):
                             Configuration.getworker()['mongo']['maxcon'])
 
 
-def main():
-    w = Worker()
+def main(conf, verbose=False):
+    conf = Configuration(conf)
+    w = Worker(verbose)
     return w
 
 if __name__ == '__main__':
+
+    ##############################################
+    #     ARGUMENTS PARSING
+    ##############################################
+    parser = argparse.ArgumentParser(prog = 'Worker', description='Send requests')
+    parser.add_argument('-c', '--conf',
+                        help='conf filepath',
+                        type=str)
+    parser.add_argument(
+            '-v', '--verbose', help='verbose output', action='store_true')
+    args = parser.parse_args()
+    print "Program Launched with args:" + str(args)
+
+    #init conf
+    conf = Configuration(args.conf)
+
+    #work
     w = main()
-    w.work()
+    w.work(args.verbose)

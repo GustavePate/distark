@@ -1,5 +1,5 @@
-from distark.majordaemon.client.services.searchfoodservice import SearchFoodService
-from distark.majordaemon.client.services.searchfoodservice import SearchFoodRequest
+from distarkcli.services.searchfoodservice import SearchFoodService
+from distarkcli.services.searchfoodservice import SearchFoodRequest
 import py
 import pytest
 

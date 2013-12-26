@@ -11,6 +11,8 @@ Based on Java example by Arkadiusz Orzechowski
 import logging
 import sys
 import time
+import argparse
+
 from binascii import hexlify
 
 import zmq
@@ -19,9 +21,9 @@ import zmq
 from distark.majordaemon.commons import MDP
 from distark.majordaemon.commons.zhelpers import dump
 from distark.majordaemon.commons.Metrics import Metrics
-from distark.commons.utils.zoo import ZooBorg
-from distark.commons.utils.MyConfiguration import Configuration
-from distark.commons.utils.uniq import Uniq
+from distarkcli.utils.zoo import ZooBorg
+from distarkcli.utils.MyConfiguration import Configuration
+from distarkcli.utils.uniq import Uniq
 
 
 class Service(object):
@@ -341,12 +343,23 @@ class MajorDomoBroker(object):
         Metrics.inc(Metrics.BROKER_out_nb_worker_request)
 
 
-def main(verbose=False):
-    """create and staùrt new broker"""
+def main(conf, verbose=False):
+    conf = Configuration(conf)
+    """create and start new broker"""
     broker = MajorDomoBroker(verbose)
     return broker
 
 if __name__ == '__main__':
-    verbose = '-v' in sys.argv
-    brok=main(verbose)
+    ##############################################
+    #     ARGUMENTS PARSING
+    ##############################################
+    parser = argparse.ArgumentParser(prog='Brocker', description='Send requests')
+    parser.add_argument('-c', '--conf',
+                        help='conf filepath',
+                        type=str)
+    parser.add_argument(
+            '-v', '--verbose', help='verbose output', action='store_true')
+    args = parser.parse_args()
+    print "Program Launched with args:" + str(args)
+    brok=main(args.conf,verbose=args.verbose)
     brok.mediate()

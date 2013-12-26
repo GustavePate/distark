@@ -6,7 +6,7 @@ Created on 6 mai 2013
 
 from distark.commons.protos.generic_service_pb2 import PBOneResponse
 from distark.commons.protos.generic_service_pb2 import TECHNICAL_ERROR_RESPONSE
-from distark.commons.utils.NetInfo import NetInfo
+from distarkcli.utils.NetInfo import NetInfo
 
 
 def error_response(etype):

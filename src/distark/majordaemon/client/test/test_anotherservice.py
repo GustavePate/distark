@@ -3,8 +3,8 @@ Created on 27 avr. 2013
 
 @author: guillaume
 '''
-from distark.majordaemon.client.services.anotherservice import AnotherService
-from distark.majordaemon.client.services.anotherservice import AnotherRequest
+from distarkcli.services.anotherservice import AnotherService
+from distarkcli.services.anotherservice import AnotherRequest
 import py
 import pytest
 

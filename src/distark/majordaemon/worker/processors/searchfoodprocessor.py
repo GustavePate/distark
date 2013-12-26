@@ -5,18 +5,18 @@ Created on 24 avr. 2013
 @author: guillaume
 '''
 
-from distark.commons.protos.services.search_food_service_pb2 import PBSearchFoodRequest
-from distark.commons.protos.services.search_food_service_pb2 import PBSearchFoodResponse
-from distark.commons.protos.services.search_food_service_pb2 import ERROR_NONE as PBSFOOD_ERROR_NONE
-from distark.commons.protos.services.search_food_service_pb2 import ERROR_NO_RESULT as PBSFOOD_ERROR_NO_RESULT
-from distark.commons.protos.services.search_food_service_pb2 import ERROR_OTHER as PBSFOOD_ERROR_OTHER
-from distark.commons.protos.generic_service_pb2 import SEARCH_FOOD_RESPONSE
-from distark.commons.protos.generic_service_pb2 import PBOneResponse
-from distark.commons.protos.generic_service_pb2 import ERROR_NONE
-from distark.commons.protos.generic_service_pb2 import ERROR_REQUEST_HANDLER
+from distarkcli.protos.services.search_food_service_pb2 import PBSearchFoodRequest
+from distarkcli.protos.services.search_food_service_pb2 import PBSearchFoodResponse
+from distarkcli.protos.services.search_food_service_pb2 import ERROR_NONE as PBSFOOD_ERROR_NONE
+from distarkcli.protos.services.search_food_service_pb2 import ERROR_NO_RESULT as PBSFOOD_ERROR_NO_RESULT
+from distarkcli.protos.services.search_food_service_pb2 import ERROR_OTHER as PBSFOOD_ERROR_OTHER
+from distarkcli.protos.generic_service_pb2 import SEARCH_FOOD_RESPONSE
+from distarkcli.protos.generic_service_pb2 import PBOneResponse
+from distarkcli.protos.generic_service_pb2 import ERROR_NONE
+from distarkcli.protos.generic_service_pb2 import ERROR_REQUEST_HANDLER
 from distark.majordaemon.worker.utils import error_response
 from distark.majordaemon.worker.objects.food import Food
-from distark.commons.utils.db.mongopool import MongoPool
+from distark.majordaemon.worker.db.mongopool import MongoPool
 import traceback
 
 
