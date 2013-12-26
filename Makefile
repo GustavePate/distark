@@ -15,11 +15,15 @@ PYTHONPATH := ${PYTHONPATH}:$(PROJECT_PACKAGE_PATH)
 
 PROTOC_PY_PATH=${PWD}/src/distark/commons/protos/
 PYTHONPATH := ${PYTHONPATH}:$(PROTOC_PY_PATH)
+CLIENTPATH=/home/project/git/distarkcli/
 
 
 ##############################
 #  my targets
 ##############################
+
+getclient:
+	$(PYTHON) $(CLIENTPATH)/setup.py install
 
 indent:
 	$(PYTHON) -m reindent --nobackup *.py
