@@ -8,3 +8,4 @@ pyzmq
 pytest
 pymongo
 beautifulsoup4
+distarkcli
