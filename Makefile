@@ -75,7 +75,7 @@ loadtest.real:
 	fl-run-test -dv tests/load/funkysimple.py
 
 testall:
-	py.test --maxfail=1 --showlocals  --duration=3 -v --clearcache  -s 
+	py.test --maxfail=1 --showlocals  --duration=3 -v --clearcache  -s --confpath=${PWD}/ressources/conf/configuration.yaml 
 
 test:
 	py.test --maxfail=1 --showlocals  --duration=3 -v  -s --confpath=${PWD}/ressources/conf/configuration.yaml 

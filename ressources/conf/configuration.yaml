@@ -5,7 +5,8 @@
     'zookeeper':{
         'ip':'127.0.0.1',
         'port':'2180'
-    }
+    },
+    'mockmode':'REAL'
 },
 'worker':{
     'mongo':{
