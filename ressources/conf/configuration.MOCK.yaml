@@ -3,7 +3,7 @@
 {
 'client':{
     'zookeeper':{
-        'mockmode':'REAL',
+        'mockmode':'MOCK',
         'ip':'127.0.0.1',
         'port':'2180'
     },
@@ -17,14 +17,14 @@
         'maxcon':10
     },
     'zookeeper':{
-        'mockmode':'REAL',
+        'mockmode':'MOCK',
         'ip':'127.0.0.1',
         'port':'2180'
     }
 },
 'broker':{
     'zookeeper':{
-        'mockmode':'REAL',
+        'mockmode':'MOCK',
         'ip':'127.0.0.1',
         'port':'2180'
     }

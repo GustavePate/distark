@@ -14,7 +14,7 @@ import argparse
 from distark.majordaemon.worker.mdwrkapi import MajorDomoWorker
 from distarkcli.utils.NetInfo import NetInfo
 from distarkcli.utils.MyConfiguration import Configuration
-from distarkcli.utils.zoo import ZooBorg
+from distarkcli.utils.zoo import ZooConst, ZooBorgFactory
 from distark.majordaemon.worker.db.mongopool import MongoPool
 from distarkcli.utils.uniq import Uniq
 from distark.majordaemon.commons.ZMQUtils import ZMQUtils
@@ -165,11 +165,12 @@ class Worker(object):
         self.uniqid = uniq.getid(uniq.WORKER)
 
         #zookeeper connection
-        zb = ZooBorg(Configuration.getworker()['zookeeper']['ip'],
+        zb = ZooBorgFactory(Configuration.getworker()['zookeeper']['mockmode'],
+                     Configuration.getworker()['zookeeper']['ip'],
                      Configuration.getworker()['zookeeper']['port'])
-        addconf = zb.getConf(ZooBorg.WORKER)
+        addconf = zb.getConf(ZooConst.WORKER)
         con_str = addconf['broker']['connectionstr']
-        zb.register(ZooBorg.WORKER, self.uniqid, self.zoo_conf_changed)
+        zb.register(ZooConst.WORKER, self.uniqid, self.zoo_conf_changed)
         self.worker = MajorDomoWorker(con_str, "echo", self.verbose)
 
         #init mongodb pool

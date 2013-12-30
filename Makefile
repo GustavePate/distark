@@ -80,6 +80,9 @@ testall:
 test:
 	py.test --maxfail=1 --showlocals  --duration=3 -v  -s --confpath=${PWD}/ressources/conf/configuration.yaml 
 
+testmock:
+	py.test --maxfail=1 --showlocals  --duration=3 -v  -s --confpath=${PWD}/ressources/conf/configuration.MOCK.yaml 
+
 publish:
 	cp -r $(PROTOPATH)/* $(FRONTPROTOPATH)
 clean:
