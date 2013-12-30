@@ -26,7 +26,7 @@ class Food(object):
         self.qty = mongodata[u'qty']
         self.id = str(mongodata[u'_id'])
 
-    def getPBFood(self, pbf):
+    def fillInPBFood(self, pbf):
         pbf.id = self.id
         pbf.name = self.name_fr
         pbf.cal = self.cal
@@ -40,5 +40,5 @@ class Food(object):
 
     def fillInPbSearchFoodResponse(self, pbsearchfoodresponse):
         pbfood = pbsearchfoodresponse.foods.add()
-        self.getPBFood(pbfood)
+        self.fillInPBFood(pbfood)
 
