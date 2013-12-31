@@ -2,6 +2,7 @@
 from distark.commons.protos.objects.food_pb2 import PBFood
 from distark.commons.protos.objects.food_pb2 import UNIT_GR
 
+
 class Food(object):
 
     id = '0'
@@ -26,7 +27,7 @@ class Food(object):
         self.qty = mongodata[u'qty']
         self.id = str(mongodata[u'_id'])
 
-    def getPBFood(self, pbf):
+    def toPBFood(self, pbf):
         pbf.id = self.id
         pbf.name = self.name_fr
         pbf.cal = self.cal
@@ -36,9 +37,6 @@ class Food(object):
         pbf.qty = self.qty
         pbf.qty_unit = UNIT_GR
 
-
-
     def fillInPbSearchFoodResponse(self, pbsearchfoodresponse):
         pbfood = pbsearchfoodresponse.foods.add()
-        self.getPBFood(pbfood)
-
+        self.toPBFood(pbfood)
