@@ -21,7 +21,7 @@ import zmq
 from distark.majordaemon.commons import MDP
 from distark.majordaemon.commons.zhelpers import dump
 from distark.majordaemon.commons.Metrics import Metrics
-from distarkcli.utils.zoo import ZooBorg
+from distarkcli.utils.zoo import ZooConst, ZooBorgFactory
 from distarkcli.utils.MyConfiguration import Configuration
 from distarkcli.utils.uniq import Uniq
 
@@ -106,12 +106,12 @@ class MajorDomoBroker(object):
                             level=logging.INFO)
         uniq = Uniq()
         self._uniqid = uniq.getid(uniq.BROKER)
-        zb = ZooBorg(Configuration.getbroker()['zookeeper']['ip'],
-                     Configuration.getbroker()['zookeeper']['port'])
-        addconf = zb.getConf(ZooBorg.BROKER)
+        zb = ZooBorgFactory(Configuration.getbroker()['zookeeper']['mockmode'],
+                            Configuration.getbroker()['zookeeper']['ip'],
+                            Configuration.getbroker()['zookeeper']['port'])
+        addconf = zb.getConf(ZooConst.BROKER)
         con_str = addconf['bindstr']
-        zb.register(ZooBorg.BROKER, self._uniqid, self.zoo_conf_changed)
-        #self.bind("tcp://*:5555")
+        zb.register(ZooConst.BROKER, self._uniqid, self.zoo_conf_changed)
         self.bind(con_str)
 
     # ---------------------------------------------------------------------

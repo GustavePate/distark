@@ -3,7 +3,7 @@
 {
 'client':{
     'zookeeper':{
-        'mockmode':'REAL',
+        'mockmode':'MOCK',
         'ip':'127.0.0.1',
         'port':'2180'
     },
@@ -13,19 +13,19 @@
     'dbdaoimpl': 'REAL',
     'mongo':{
         'host':'127.0.0.1',
-        'port':27018,
+        'port':27017,
         'db':'hp',
         'maxcon':10
     },
     'zookeeper':{
-        'mockmode':'REAL',
+        'mockmode':'MOCK',
         'ip':'127.0.0.1',
         'port':'2180'
     }
 },
 'broker':{
     'zookeeper':{
-        'mockmode':'REAL',
+        'mockmode':'MOCK',
         'ip':'127.0.0.1',
         'port':'2180'
     }

@@ -9,7 +9,7 @@ install:
     - export PYTHONPATH=$PYTHONPATH:/home/travis/build/GustavePate/distark/src/distark/commons/protos/
     - echo $PYTHONPATH
 # command to run tests
-script: 
+script:
     - echo $PYTHONPATH
     - export PYTHONPATH=$PYTHONPATH:/home/travis/build/GustavePate/distark/src/distark/commons/protos/
     - echo $PYTHONPATH
@@ -19,3 +19,9 @@ script:
 branches:
    only:
        - master
+
+before_script:
+    - mongo hp --eval 'db.addUser("travis", "test");'
+
+services:
+    - mongodb
