@@ -13,20 +13,19 @@ class Food(object):
     qty = '1'
     unit = 'g'
 
-    def __init__(self, mongodata=None):
-        if mongodata:
-            self._initfrommongo(mongodata)
+    def __init__(self, foodDAO=None):
+        if foodDAO:
+            self._initfromDAO(foodDAO)
 
-    def _initfrommongo(self, mongodata):
-        print mongodata
-        self.name_fr = mongodata[u'name_fr']
-        self.pro = mongodata[u'pro']
-        self.lip = mongodata[u'lip']
-        self.glu = mongodata[u'glu']
-        self.qty = mongodata[u'qty']
-        self.id = str(mongodata[u'_id'])
+    def _initfromDAO(self, foodDAO):
 
-    def toPBFood(self, pbf):
+
+
+        pass
+
+
+
+    def fillInPBFood(self, pbf):
         pbf.id = self.id
         pbf.name = self.name_fr
         pbf.cal = self.cal
@@ -38,5 +37,4 @@ class Food(object):
 
     def fillInPbSearchFoodResponse(self, pbsearchfoodresponse):
         pbfood = pbsearchfoodresponse.foods.add()
-        self.toPBFood(pbfood)
         self.fillInPBFood(pbfood)

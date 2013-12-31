@@ -19,7 +19,8 @@ class MongoPool(object):
         if not(self.initialized):
             if (host == '' or port == '' or db == ''):
                 # raise exception
-                raise Exception('MongoPool init error: missing host or port')
+                print 'MongoPool init error: missing host or port'
+                raise RuntimeError('MongoPool init error: missing host or port')
             else:
                 self.__maxconnection = maxconnection
                 for _ in range(1, maxconnection + 1):
@@ -49,11 +50,20 @@ class MongoPool(object):
         self.returnToPool(con)
 
     def find(self, table, query):
-        con = self.getConnection()
-        table = eval("con."+table)
-        qryres = table.find(query)
-        self.returnToPool(con)
-        return qryres
+        qryres = []
+        con = None
+        try:
+            con = self.getConnection()
+            table = eval("con."+table)
+            qryres = table.find(query)
+        except:
+            print 'arg'
+            print type(Exception)
+            raise
+        finally:
+            if con:
+                self.returnToPool(con)
+            return qryres
 
     def returnToPool(self, conn):
         #print self
