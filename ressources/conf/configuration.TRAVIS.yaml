@@ -1,0 +1,37 @@
+
+#use spaces not tab !
+{
+'client':{
+    'zookeeper':{
+        'mockmode':'MOCK',
+        'ip':'127.0.0.1',
+        'port':'2180'
+    },
+    'mockmode':'REAL'
+},
+'worker':{
+    'mongo':{
+        'host':'127.0.0.1',
+        'port':27017,
+        'db':'hp',
+        'maxcon':10
+    },
+    'zookeeper':{
+        'mockmode':'MOCK',
+        'ip':'127.0.0.1',
+        'port':'2180'
+    }
+},
+'broker':{
+    'zookeeper':{
+        'mockmode':'MOCK',
+        'ip':'127.0.0.1',
+        'port':'2180'
+    }
+},
+'global':{
+   #Sur l'axe du temps écrire un label toutes les X mesures
+   'XLABELFREQUENCY':900
+
+}
+}

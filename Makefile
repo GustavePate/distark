@@ -52,8 +52,6 @@ zoo:
 zools:
 	$(ZOO)/bin/zkCli.sh -server localhost:2180
 
-test.travis:
-	py.test --maxfail=5 --showlocals --duration=2 -v -m "not slow and not fullstack"
 
 test.qa:
 	py.test --cov src/ --pep8
@@ -82,6 +80,9 @@ test:
 
 testmock:
 	py.test --maxfail=1 --showlocals  --duration=3 -v  -s --confpath=${PWD}/ressources/conf/configuration.MOCK.yaml 
+
+test.travis:
+	py.test --maxfail=1 --showlocals --duration=2 -v -m "not slow and not fullstack"  --confpath=${PWD}/ressources/conf/configuration.TRAVIS.yaml 
 
 publish:
 	cp -r $(PROTOPATH)/* $(FRONTPROTOPATH)
