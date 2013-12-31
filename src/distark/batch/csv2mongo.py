@@ -5,8 +5,8 @@ import traceback
 import codecs
 import re
 
-from distark.commons.utils.db.mongopool import MongoPool
-from distark.commons.utils.MyConfiguration import Configuration
+from distark.majordaemon.worker.db.mongopool import MongoPool
+from distarkcli.utils.MyConfiguration import Configuration
 
 
 #TODO: pass the configuration by command line
