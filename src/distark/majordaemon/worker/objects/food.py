@@ -1,5 +1,4 @@
 # encoding: utf-8
-from distark.commons.protos.objects.food_pb2 import PBFood
 from distark.commons.protos.objects.food_pb2 import UNIT_GR
 
 
@@ -27,11 +26,7 @@ class Food(object):
         self.qty = mongodata[u'qty']
         self.id = str(mongodata[u'_id'])
 
-<<<<<<< HEAD
     def toPBFood(self, pbf):
-=======
-    def fillInPBFood(self, pbf):
->>>>>>> 3d6fec242872ab296f3b116ece1020994884eec0
         pbf.id = self.id
         pbf.name = self.name_fr
         pbf.cal = self.cal
@@ -43,9 +38,5 @@ class Food(object):
 
     def fillInPbSearchFoodResponse(self, pbsearchfoodresponse):
         pbfood = pbsearchfoodresponse.foods.add()
-<<<<<<< HEAD
         self.toPBFood(pbfood)
-=======
         self.fillInPBFood(pbfood)
-
->>>>>>> 3d6fec242872ab296f3b116ece1020994884eec0
