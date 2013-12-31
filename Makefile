@@ -83,7 +83,7 @@ testmock:
 	py.test --maxfail=1 --showlocals  --duration=3 -v  -s --confpath=${PWD}/ressources/conf/configuration.MOCK.yaml 
 
 test.travis:
-	python -m distark.batch.dbinit.go
+	#python -m distark.batch.dbinit.go
 	py.test --maxfail=1 --showlocals --duration=2 -v -m "not slow and not fullstack"  --confpath=${PWD}/ressources/conf/configuration.TRAVIS.yaml 
 
 publish:
