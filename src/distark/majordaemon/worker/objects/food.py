@@ -1,5 +1,6 @@
 # encoding: utf-8
 from distark.commons.protos.objects.food_pb2 import UNIT_GR
+from distark.majordaemon.worker.dao.FoodDAO import FoodDAOFactory
 
 
 class Food(object):
@@ -18,12 +19,16 @@ class Food(object):
             self._initfromDAO(foodDAO)
 
     def _initfromDAO(self, foodDAO):
+        fooddao = FoodDAOFactory()
 
-
-
-        pass
-
-
+        self.id = fooddao.id
+        self.name_fr = fooddao.name_fr
+        self.pro = fooddao.pro
+        self.lip = fooddao.lip
+        self.glu = fooddao.glu
+        self.cal = fooddao.cal
+        self.qty = fooddao.qty
+        self.unit = fooddao.unit
 
     def fillInPBFood(self, pbf):
         pbf.id = self.id

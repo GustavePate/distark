@@ -16,7 +16,7 @@ from distarkcli.protos.generic_service_pb2 import ERROR_NONE
 from distarkcli.protos.generic_service_pb2 import ERROR_REQUEST_HANDLER
 from distark.majordaemon.worker.utils import error_response
 from distark.majordaemon.worker.objects.food import Food
-from distark.majordaemon.worker.db.mongopool import MongoPool
+from distark.majordaemon.worker.dao.FoodDAO import FoodDAOFactory, FoodDAO
 import traceback
 
 
@@ -32,44 +32,40 @@ class SearchFoodProcessor(object):
         '''
         Constructor
         '''
-        self.req = PBSearchFoodRequest()
         self.resp = PBSearchFoodResponse()
         self.req = req
 
+    def analyseinput(self):
+        #Throw BADINPUTPARAMETERS Exception
+        if self.req.request_food_str == '' or not(self.req.request_food_str):
+            raise(Exception("SearchFoodResponse: bad parameters"))
+
     def process(self, pbsearchfoodresp):
         try:
-            mp = MongoPool()
-            print "REQ:" + str(self.req.request_food_str)
-            qryres = mp.find("food.fooddb",{'name_fr':
-                                        {'$regex': '.*' + self.req.request_food_str
-                                        + '.*',
-                                        '$options': 'i'}
-                                        })
-            nbres = qryres.count()
-            print "NBRES:" + str(nbres)
-            if nbres > self.MAX_RESULTS:
-                #add a warning in response
-                pass
 
-            if qryres.count() > 0:
-                #build response of at more MAX_RESULT rec
-                cpt = 1
-                for r in qryres:
-                    #add rec to pbresponse
-                    f = Food(mongodata=r)
-                    f.fillInPbSearchFoodResponse(pbsearchfoodresp)
-                    if cpt >= self.MAX_RESULTS:
-                        break
-                    cpt += 1
-                pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_NONE
-            else:
-                #return functional error ERROR_NO_RESULT
-                #TODO: hashmap in protoc ?
+            #fooddao = FoodDAO()  # completion
+            fooddao = FoodDAOFactory()
+            fooddaolist = fooddao.searchFoodByPattern(self.req.request_food_str)
+            cpt = 0
+            pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_NONE
+
+            if len(fooddaolist) == 0:
                 pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_NO_RESULT
-        except Exception:
+
+            for fdao in fooddaolist:
+                f = Food(fdao)
+                f.fillInPbSearchFoodResponse(pbsearchfoodresp)
+                if cpt >= self.MAX_RESULTS:
+                    pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_OTHER
+                    #return functional error ERROR_TOO_MUCH_RESULT
+                    #TODO: hashmap in protoc ?
+                    break
+                cpt += 1
+
+        except:
             print traceback.format_exc()
             pbsearchfoodresp.func_error_code = PBSFOOD_ERROR_OTHER
-            raise Exception
+            raise Exception("SearchFood: Unexpected exception")
 
 
 # IN: PBOneRequest
@@ -85,8 +81,7 @@ def search_food_request_handler(oreq):
         # a partir de la si il y a une erreur elle est fonctionnelle
         processor.process(oresp.searchfoodresp)
 
-    except Exception:
-        print "SearchFood_request: ", Exception
+    except:
         traceback.print_exc()
         oresp = error_response(ERROR_REQUEST_HANDLER)
     finally:

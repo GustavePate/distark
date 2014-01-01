@@ -10,7 +10,7 @@
     'mockmode':'REAL'
 },
 'worker':{
-    'dbdaoimpl': 'REAL',
+    'dbdaoimpl': 'MOCK',
     'mongo':{
         'host':'127.0.0.1',
         'port':27018,
