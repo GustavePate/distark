@@ -27,7 +27,7 @@ getclient:
 
 indent:
 	$(PYTHON) -m reindent --nobackup *.py
-	
+
 protoc:
 	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=$(PROTOPATH) ./ressources/commons/protos/objects/*
 	$(PROTOC) --python_out=./src/distark/commons/protos/ --proto_path=$(PROTOPATH) ./ressources/commons/protos/services/*

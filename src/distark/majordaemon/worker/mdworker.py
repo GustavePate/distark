@@ -141,7 +141,7 @@ class Worker(object):
                 print "Have to quit, bye !"
                 break  # Worker was interrupted
 
-            ### Reply Must be in a list !!!!!!
+            # Reply Must be in a list !!!!!!
             reply = self.deserialize_and_reply(request)
 
     def stop(self):
@@ -164,16 +164,16 @@ class Worker(object):
         uniq = Uniq()
         self.uniqid = uniq.getid(uniq.WORKER)
 
-        #zookeeper connection
+        # zookeeper connection
         zb = ZooBorgFactory(Configuration.getworker()['zookeeper']['mockmode'],
-                     Configuration.getworker()['zookeeper']['ip'],
-                     Configuration.getworker()['zookeeper']['port'])
+                            Configuration.getworker()['zookeeper']['ip'],
+                            Configuration.getworker()['zookeeper']['port'])
         addconf = zb.getConf(ZooConst.WORKER)
         con_str = addconf['broker']['connectionstr']
         zb.register(ZooConst.WORKER, self.uniqid, self.zoo_conf_changed)
         self.worker = MajorDomoWorker(con_str, "echo", self.verbose)
 
-        #init mongodb pool
+        # init mongodb pool
         self.mp = MongoPool(Configuration.getworker()['mongo']['host'],
                             Configuration.getworker()['mongo']['port'],
                             Configuration.getworker()['mongo']['db'],
@@ -190,18 +190,18 @@ if __name__ == '__main__':
     ##############################################
     #     ARGUMENTS PARSING
     ##############################################
-    parser = argparse.ArgumentParser(prog = 'Worker', description='Send requests')
+    parser = argparse.ArgumentParser(prog='Worker', description='Send requests')
     parser.add_argument('-c', '--conf',
                         help='conf filepath',
                         type=str)
     parser.add_argument(
-            '-v', '--verbose', help='verbose output', action='store_true')
+        '-v', '--verbose', help='verbose output', action='store_true')
     args = parser.parse_args()
     print "Program Launched with args:" + str(args)
 
-    #init conf
+    # init conf
     conf = Configuration(args.conf)
 
-    #work
+    # work
     w = main()
     w.work(args.verbose)

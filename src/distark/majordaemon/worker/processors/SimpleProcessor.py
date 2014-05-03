@@ -16,6 +16,7 @@ import traceback
 
 
 class SimpleProcessor(object):
+
     '''
     classdocs
     '''
@@ -33,9 +34,10 @@ class SimpleProcessor(object):
     def process(self, simpleresp):
         simpleresp.boum = ''.join(reversed(self.req.youpla))
 
-
     # IN: PBOneRequest
     # OUT: PBOneResponse
+
+
 def simple_request_handler(oreq):
 
     oresp = PBOneResponse()

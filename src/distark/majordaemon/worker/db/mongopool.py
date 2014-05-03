@@ -35,7 +35,7 @@ class MongoPool(object):
             len(self.__busyconnection))
 
     def getConnection(self):
-        #print self
+        # print self
         if len(self.__availableconnection) > 0:
             conn = self.__availableconnection.pop()
             self.__busyconnection.append(conn)
@@ -45,7 +45,7 @@ class MongoPool(object):
 
     def insert(self, table, data):
         con = self.getConnection()
-        table = eval("con."+table)
+        table = eval("con." + table)
         table.insert(data)
         self.returnToPool(con)
 
@@ -54,7 +54,7 @@ class MongoPool(object):
         con = None
         try:
             con = self.getConnection()
-            table = eval("con."+table)
+            table = eval("con." + table)
             qryres = table.find(query)
         except:
             print 'arg'
@@ -66,8 +66,8 @@ class MongoPool(object):
             return qryres
 
     def returnToPool(self, conn):
-        #print self
-        #make connection available
+        # print self
+        # make connection available
         if conn in self.__busyconnection:
             self.__availableconnection.append(conn)
             self.__busyconnection.remove(conn)

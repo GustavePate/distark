@@ -7,7 +7,9 @@ from distark.majordaemon.worker.db.mongopool import MongoPool
 
 from distark.commons.protos.objects.food_pb2 import UNIT_GR
 
-#TODO pass argument to implementation (kwargs...)
+# TODO pass argument to implementation (kwargs...)
+
+
 def FoodDAOFactory(id=None, name_fr=None, pro=None, lip=None, glu=None, cal=None, qty=None, unit=None):
     factory = {}
     factory['REAL'] = FoodDAOMongo
@@ -91,7 +93,7 @@ class FoodDAOMongo(FoodDAO):
         if id:
             return FoodDAOMock(id, 'a random food')
         else:
-            raise(Exception("id not supplied"))
+            raise Exception
 
     @staticmethod
     def searchFoodByPattern(pattern):
@@ -99,9 +101,9 @@ class FoodDAOMongo(FoodDAO):
         try:
             mp = MongoPool()
             qryres = mp.find("food.fooddb", {'name_fr':
-                                            {'$regex': '.*' + pattern
-                                                + '.*',
-                                                '$options': 'i'}
+                                             {'$regex': '.*' + pattern
+                                              + '.*',
+                                              '$options': 'i'}
                                              })
             print 'allo3'
             if qryres:
@@ -109,7 +111,7 @@ class FoodDAOMongo(FoodDAO):
             else:
                 print 'None'
             if qryres.count() > 0:
-                #build response of at more MAX_RESULT rec
+                # build response of at more MAX_RESULT rec
                 cpt = 1
                 for r in qryres:
                     f = FoodDAOMongo()
@@ -141,14 +143,14 @@ class FoodDAOMongo(FoodDAO):
 class FoodDAOMock(FoodDAO):
 
     def __init__(self, id=None, name_fr='mock_unknown', pro=0.0, lip=0.0, glu=0.0, cal=0.0, qty=1, unit='g'):
-        super(FoodDAOMock,self).__init__(id, name_fr, pro, lip, glu, cal, qty, unit)
+        super(FoodDAOMock, self).__init__(id, name_fr, pro, lip, glu, cal, qty, unit)
 
     @staticmethod
     def get(id):
         if id:
             return FoodDAOMock(id, 'a random food')
         else:
-            raise(Exception("id not supplied"))
+            raise Exception
 
     @staticmethod
     def searchFoodByPattern(pattern):
@@ -167,9 +169,9 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--conf', help='conf to load', type=str)
     args = parser.parse_args()
 
-    #init conf
+    # init conf
     conf = Configuration(args.conf)
-    #init mongo pool
+    # init mongo pool
     mp = MongoPool(Configuration.getworker()['mongo']['host'],
                    Configuration.getworker()['mongo']['port'],
                    Configuration.getworker()['mongo']['db'])

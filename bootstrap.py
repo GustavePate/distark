@@ -95,8 +95,7 @@ if is_jython:
     assert subprocess.Popen([sys.executable] + ['-c', quote(cmd), '-mqNxd',
                                                 quote(tmpeggs), 'zc.buildout' + VERSION],
                             env=dict(os.environ,
-                                     PYTHONPATH=
-                                     ws.find(pkg_resources.Requirement.parse(requirement)).location
+                                     PYTHONPATH=ws.find(pkg_resources.Requirement.parse(requirement)).location
                                      ),
                             ).wait() == 0
 
@@ -105,8 +104,7 @@ else:
         os.P_WAIT, sys.executable, quote(sys.executable),
         '-c', quote(cmd), '-mqNxd', quote(tmpeggs), 'zc.buildout' + VERSION,
         dict(os.environ,
-             PYTHONPATH=
-             ws.find(pkg_resources.Requirement.parse(requirement)).location
+             PYTHONPATH=ws.find(pkg_resources.Requirement.parse(requirement)).location
              ),
     ) == 0
 

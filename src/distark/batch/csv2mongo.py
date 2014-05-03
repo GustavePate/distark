@@ -9,7 +9,7 @@ from distark.majordaemon.worker.db.mongopool import MongoPool
 from distarkcli.utils.MyConfiguration import Configuration
 
 
-#TODO: pass the configuration by command line
+# TODO: pass the configuration by command line
 MAX_CONN = 1
 host = Configuration.getworker()['mongo']['host']
 port = Configuration.getworker()['mongo']['port']
@@ -29,8 +29,7 @@ def is_valid_qte(line):
 
 
 def store_data(datadic):
-
-    #store in db
+    # store in db
     mp.insert("food.fooddb", datadic)
 
 
@@ -38,7 +37,7 @@ def analyse_line(line):
 
     valid = False
 
-    #cut line
+    # cut line
     rec = {}
     data = line.split(";")
 
@@ -53,23 +52,23 @@ def analyse_line(line):
         rec['qty'] = data[5].strip()
         valid = True
 
-    #no ; in name
+    # no ; in name
     # check invalid characters in name
     if valid:
         if ';' in rec["name_fr"]:
             valid = False
 
-    #glu, pro, lip, cal are numbers
+    # glu, pro, lip, cal are numbers
     if valid:
         try:
             rec['cal'] = float(rec['cal'])
             rec['pro'] = float(rec['pro'])
             rec['glu'] = float(rec['glu'])
             rec['lip'] = float(rec['lip'])
-        except:
+        except Exception:
             valid = False
 
-    #qty is in accepted domain
+    # qty is in accepted domain
     if valid:
         valid = is_valid_qte(rec['qty'])
 
@@ -89,11 +88,11 @@ def reject(file, line):
         print "Rejected: " + line
 
 
-#csv format
+# csv format
 # nam;cal;prot;glu;lip;qty
 def main(input, rejectfile):
 
-    #open data file
+    # open data file
     f = codecs.open(input, "r", "utf-8")
     for l in f:
         to_store = analyse_line(l)
@@ -121,7 +120,7 @@ if __name__ == '__main__':
         else:
             print 'do nothing !!!'
 
-    except:
+    except Exception:
         traceback.print_exc()
 
     finally:
